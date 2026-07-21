@@ -1,0 +1,96 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  Broker
+  SuperAdmin
+}
+
+enum PropertyStatus {
+  Available
+  Sold
+  Draft
+}
+
+enum PropertyType {
+  House
+  Condominium
+  Townhouse
+  Land
+  Commercial
+}
+
+model User {
+  id             String     @id @default(uuid())
+  role           Role       @default(Broker)
+  name           String
+  email          String     @unique
+  password       String
+  whatsappNumber String     @map("whatsapp_number")
+  companyName    String?    @map("company_name")
+  properties     Property[]
+  createdAt      DateTime   @default(now()) @map("created_at")
+  updatedAt      DateTime   @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+model Property {
+  id            String          @id @default(uuid())
+  brokerId      String          @map("broker_id")
+  broker        User            @relation(fields: [brokerId], references: [id])
+  title         String
+  description   String
+  price         Decimal
+  status        PropertyStatus  @default(Available)
+  propertyType  PropertyType    @default(House) @map("property_type")
+  region        String
+  addressLine1  String          @map("address_line_1")
+  city          String
+  stateProvince String          @map("state_province")
+  postalCode    String          @map("postal_code")
+  country       String
+  images        PropertyImage[]
+  inquiries     Inquiry[]
+  createdAt     DateTime        @default(now()) @map("created_at")
+  updatedAt     DateTime        @updatedAt @map("updated_at")
+
+  @@map("properties")
+}
+
+model PropertyImage {
+  id         String   @id @default(uuid())
+  propertyId String   @map("property_id")
+  property   Property @relation(fields: [propertyId], references: [id])
+  url        String
+  isPrimary  Boolean  @default(false) @map("is_primary")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@map("property_images")
+}
+
+model Inquiry {
+  id          String   @id @default(uuid())
+  propertyId  String   @map("property_id")
+  property    Property @relation(fields: [propertyId], references: [id])
+  clientName  String   @map("client_name")
+  clientEmail String?  @map("client_email")
+  clientPhone String?  @map("client_phone")
+  message     String
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("inquiries")
+}
