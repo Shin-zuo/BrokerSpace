@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { PropertyController } from "@/src/controllers/propertyController";
 import fs from "fs";
 import path from "path";
+import { getSession } from "@/src/lib/auth";
 
 export async function GET() {
   try {
@@ -49,7 +50,15 @@ export async function POST(request: Request) {
       data = await request.json();
     }
 
-    const newProperty = await PropertyController.create(data);
+    const session = await getSession();
+    if (!session || !session.userId) {
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    }
+    if (!session.brokerId) {
+      return NextResponse.json({ success: false, error: 'Only brokers can create properties' }, { status: 403 });
+    }
+
+    const newProperty = await PropertyController.create(data, session.brokerId as string);
     return NextResponse.json({ success: true, data: newProperty }, { status: 201 });
   } catch (error: any) {
     console.error("POST /api/properties error:", error);

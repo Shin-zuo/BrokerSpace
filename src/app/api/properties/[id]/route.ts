@@ -2,10 +2,14 @@ import { NextResponse } from "next/server";
 import { PropertyController } from "@/src/controllers/propertyController";
 import fs from "fs";
 import path from "path";
+import { getSession } from "@/src/lib/auth";
 
 export async function PUT(request: Request, props: { params: Promise<{ id: string }> }) {
   const { id } = await props.params;
   try {
+    const session = await getSession();
+    if (!session || !session.brokerId) return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+
     const contentType = request.headers.get("content-type") || "";
     let data: any = {};
     
@@ -54,6 +58,9 @@ export async function DELETE(
 ) {
   const { id } = await props.params;
   try {
+    const session = await getSession();
+    if (!session || !session.brokerId) return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+
     await PropertyController.delete(id);
     return NextResponse.json({ success: true, message: "Property deleted" });
   } catch (error: any) {

@@ -31,6 +31,7 @@ interface Property {
   addressLine1: string;
   postalCode?: string;
   description?: string;
+  sizeSqm?: number | null;
   images?: PropertyImage[];
 }
 
@@ -40,6 +41,7 @@ const initialForm = {
   price: "",
   status: "Available",
   propertyType: "House",
+  sizeSqm: "",
   region: "",
   stateProvince: "",
   city: "",
@@ -97,6 +99,7 @@ export default function PropertiesView() {
           price: property.price.toString(),
           status: property.status,
           propertyType: property.propertyType || "House",
+          sizeSqm: property.sizeSqm ? property.sizeSqm.toString() : "",
           region: property.region,
           stateProvince: property.stateProvince,
           city: property.city,
@@ -405,6 +408,11 @@ export default function PropertiesView() {
                   <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-slate-100 text-slate-700">
                     {viewProperty.propertyType}
                   </span>
+                  {viewProperty.sizeSqm && (
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-blue-50 text-blue-700">
+                      {viewProperty.sizeSqm} sqm
+                    </span>
+                  )}
                   <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold
                     ${viewProperty.status === 'Available' ? 'bg-green-100 text-green-800' : 
                       viewProperty.status === 'Sold' ? 'bg-slate-200 text-slate-800' : 
@@ -463,6 +471,11 @@ export default function PropertiesView() {
                 </select>
               </div>
 
+              <div className="flex flex-col gap-1.5">
+                <label className="text-sm font-medium text-slate-700">Size (sqm)</label>
+                <input type="number" step="any" name="sizeSqm" value={formData.sizeSqm} onChange={handleChange} className="w-full px-3 py-2 border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors text-sm text-slate-900" placeholder="e.g. 150" />
+              </div>
+
               {/* Photos Upload */}
               <div className="flex flex-col gap-1.5 md:col-span-2 mt-2">
                 <label className="text-sm font-medium text-slate-700">Property Photos</label>
@@ -476,28 +489,27 @@ export default function PropertiesView() {
                     <input id="dropzone-file" type="file" className="hidden" multiple accept="image/*" onChange={handleFileChange} />
                   </label>
                 </div>
-                {/* Preview existing images */}
-                {existingImages.length > 0 && (
-                  <div className="flex flex-wrap gap-3 mt-3 mb-2">
+                
+                {/* Unified Image Preview Grid */}
+                {(existingImages.length > 0 || selectedFiles.length > 0) && (
+                  <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 gap-3 mt-4 bg-slate-50 p-4 rounded-xl border border-slate-100 max-h-64 overflow-y-auto">
                     {existingImages.map((img) => (
-                      <div key={img.id} className="relative group w-20 h-20 rounded-md overflow-hidden bg-slate-100 border border-slate-200">
+                      <div key={img.id} className="relative group aspect-square rounded-lg overflow-hidden bg-white border border-slate-200 shadow-sm">
                         <img src={img.url} alt="existing" className="w-full h-full object-cover" />
-                        <button type="button" onClick={() => removeExistingImage(img.id)} className="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-all cursor-pointer shadow-sm">
+                        <button type="button" onClick={() => removeExistingImage(img.id)} className="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-all cursor-pointer shadow-md">
                           <X className="w-3 h-3" />
                         </button>
                       </div>
                     ))}
-                  </div>
-                )}
-                {/* Preview selected files */}
-                {selectedFiles.length > 0 && (
-                  <div className="flex flex-wrap gap-3 mt-3">
                     {selectedFiles.map((file, idx) => (
-                      <div key={idx} className="relative group w-20 h-20 rounded-md overflow-hidden bg-slate-100 border border-slate-200">
+                      <div key={idx} className="relative group aspect-square rounded-lg overflow-hidden bg-white border border-slate-200 shadow-sm">
                         <img src={URL.createObjectURL(file)} alt="preview" className="w-full h-full object-cover" />
-                        <button type="button" onClick={() => removeFile(idx)} className="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-all cursor-pointer shadow-sm">
+                        <button type="button" onClick={() => removeFile(idx)} className="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-all cursor-pointer shadow-md">
                           <X className="w-3 h-3" />
                         </button>
+                        <div className="absolute bottom-0 left-0 right-0 bg-blue-500/90 text-white text-[10px] font-bold text-center py-0.5 shadow-sm">
+                          NEW
+                        </div>
                       </div>
                     ))}
                   </div>

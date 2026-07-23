@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import React from "react";
 import { LayoutDashboard, Home, MessageSquare, Settings, LogOut } from "lucide-react";
 import { motion } from "framer-motion";
+import { logoutAction } from "@/src/app/actions/auth";
 
 const navItems = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -57,10 +58,12 @@ export default function Sidebar() {
       </nav>
 
       <div className="p-4 border-t border-slate-200/50">
-        <button className="group flex w-full items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-600 hover:bg-red-50 hover:text-red-600 transition-colors duration-200 cursor-pointer">
-          <LogOut className="w-5 h-5 text-slate-400 group-hover:text-red-500 transition-colors" />
-          Sign Out
-        </button>
+        <form action={logoutAction}>
+          <button type="submit" className="group flex w-full items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-600 hover:bg-red-50 hover:text-red-600 transition-colors duration-200 cursor-pointer">
+            <LogOut className="w-5 h-5 text-slate-400 group-hover:text-red-500 transition-colors" />
+            Sign Out
+          </button>
+        </form>
       </div>
     </div>
   );

@@ -34,27 +34,54 @@ enum PropertyType {
 model User {
   id             String     @id @default(uuid())
   role           Role       @default(Broker)
-  name           String
+  username       String     @unique
   email          String     @unique
   password       String
-  whatsappNumber String     @map("whatsapp_number")
-  companyName    String?    @map("company_name")
-  properties     Property[]
+  
+  brokerId       String?    @unique @map("broker_id")
+  broker         Broker?    @relation(fields: [brokerId], references: [id])
+  
   createdAt      DateTime   @default(now()) @map("created_at")
   updatedAt      DateTime   @updatedAt @map("updated_at")
 
   @@map("users")
 }
 
+model Broker {
+  id                String     @id @default(uuid())
+  name              String
+  whatsappNumber    String     @map("whatsapp_number")
+  companyName       String?    @map("company_name")
+  licenseNumber     String?    @map("license_number")
+  bio               String?
+  profilePictureUrl String?    @map("profile_picture_url")
+  facebookUrl       String?    @map("facebook_url")
+  linkedinUrl       String?    @map("linkedin_url")
+  officeAddress     String?    @map("office_address")
+  instagramUrl      String?    @map("instagram_url")
+  websiteUrl        String?    @map("website_url")
+  specialization    String?
+  publicEmail       String?    @map("public_email")
+
+  user              User?
+  properties        Property[]
+  
+  createdAt         DateTime   @default(now()) @map("created_at")
+  updatedAt         DateTime   @updatedAt @map("updated_at")
+
+  @@map("brokers")
+}
+
 model Property {
   id            String          @id @default(uuid())
   brokerId      String          @map("broker_id")
-  broker        User            @relation(fields: [brokerId], references: [id])
+  broker        Broker          @relation(fields: [brokerId], references: [id])
   title         String
   description   String
   price         Decimal
   status        PropertyStatus  @default(Available)
   propertyType  PropertyType    @default(House) @map("property_type")
+  sizeSqm       Decimal?        @map("size_sqm")
   region        String
   addressLine1  String          @map("address_line_1")
   city          String

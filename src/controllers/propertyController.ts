@@ -1,26 +1,6 @@
 import { prisma } from "@/src/lib/prisma";
 
 export class PropertyController {
-  // Mock authentication helper
-  private static async getOrCreateDummyBroker() {
-    let broker = await prisma.user.findFirst({
-      where: { role: "Broker" }
-    });
-    
-    if (!broker) {
-      broker = await prisma.user.create({
-        data: {
-          name: "Test Broker",
-          email: "test@broker.com",
-          password: "password123", // In a real app, hash this
-          whatsappNumber: "+639123456789",
-          role: "Broker"
-        }
-      });
-    }
-    return broker;
-  }
-
   static async getAll() {
     return await prisma.property.findMany({
       include: { images: true },
@@ -28,17 +8,16 @@ export class PropertyController {
     });
   }
 
-  static async create(data: any) {
-    const broker = await this.getOrCreateDummyBroker();
-
+  static async create(data: any, brokerId: string) {
     return await prisma.property.create({
       data: {
-        brokerId: broker.id,
+        brokerId: brokerId,
         title: data.title,
         description: data.description,
         price: parseFloat(data.price),
         status: data.status || "Available",
         propertyType: data.propertyType || "House",
+        sizeSqm: data.sizeSqm ? parseFloat(data.sizeSqm) : null,
         region: data.region,
         addressLine1: data.addressLine1,
         city: data.city,
@@ -73,13 +52,19 @@ export class PropertyController {
       
       for (const img of images) {
         if (img.url.startsWith('/uploads/properties/')) {
-          const filePath = path.join(process.cwd(), "public", img.url);
+          // Remove leading slash to ensure safe path.join on all OS
+          const safeUrl = img.url.replace(/^\//, '');
+          const filePath = path.join(process.cwd(), "public", safeUrl);
+          console.log("Attempting to delete image file:", filePath);
           if (fs.existsSync(filePath)) {
             try {
               fs.unlinkSync(filePath);
+              console.log("Successfully deleted:", filePath);
             } catch (e) {
               console.error("Failed to delete file:", e);
             }
+          } else {
+            console.log("File does not exist at path:", filePath);
           }
         }
       }
@@ -93,6 +78,7 @@ export class PropertyController {
         price: parseFloat(data.price),
         status: data.status,
         propertyType: data.propertyType,
+        sizeSqm: data.sizeSqm ? parseFloat(data.sizeSqm) : null,
         region: data.region,
         addressLine1: data.addressLine1,
         city: data.city,
@@ -120,13 +106,18 @@ export class PropertyController {
 
     for (const img of images) {
       if (img.url.startsWith('/uploads/properties/')) {
-        const filePath = path.join(process.cwd(), "public", img.url);
+        const safeUrl = img.url.replace(/^\//, '');
+        const filePath = path.join(process.cwd(), "public", safeUrl);
+        console.log("Attempting to delete image file on property delete:", filePath);
         if (fs.existsSync(filePath)) {
           try {
             fs.unlinkSync(filePath);
+            console.log("Successfully deleted:", filePath);
           } catch (e) {
             console.error("Failed to delete file on property delete:", e);
           }
+        } else {
+          console.log("File does not exist at path:", filePath);
         }
       }
     }
