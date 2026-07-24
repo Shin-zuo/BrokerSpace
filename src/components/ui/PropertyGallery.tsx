@@ -13,9 +13,9 @@ export default function PropertyGallery({ images, title }: { images: PropertyIma
   const sidebarImages = images.filter(img => img.url !== activeImage).slice(0, 4);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-12 h-[400px] md:h-[600px]">
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-12 h-[400px] md:h-[600px] overflow-hidden">
       {/* Active/Main Image */}
-      <div className={`rounded-3xl overflow-hidden shadow-sm ${sidebarImages.length > 0 ? 'md:col-span-3' : 'md:col-span-4'}`}>
+      <div className={`w-full h-full min-h-0 min-w-0 rounded-3xl overflow-hidden shadow-sm ${sidebarImages.length > 0 ? 'md:col-span-3' : 'md:col-span-4'}`}>
         <img 
           src={activeImage} 
           alt={title} 
@@ -25,7 +25,7 @@ export default function PropertyGallery({ images, title }: { images: PropertyIma
 
       {/* Sidebar Images */}
       {sidebarImages.length > 0 && (
-        <div className="hidden md:flex flex-col gap-4 h-full">
+        <div className="hidden md:flex flex-col gap-4 h-full min-h-0">
           {sidebarImages.map((img, idx) => (
             <div 
               key={img.id || idx} 

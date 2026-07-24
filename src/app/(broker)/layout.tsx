@@ -1,5 +1,6 @@
 import React from "react";
 import Sidebar from "@/src/components/layout/Sidebar";
+import BrokerHeader from "@/src/components/layout/BrokerHeader";
 
 export default function BrokerLayout({
   children,
@@ -13,9 +14,7 @@ export default function BrokerLayout({
       
       {/* Main Content Area */}
       <div className="flex-1 ml-64 flex flex-col min-h-screen relative z-10">
-        <header className="h-20 glass-panel border-b border-white/50 flex items-center px-10 sticky top-0 z-10 backdrop-blur-xl bg-white/40">
-          <h1 className="text-xl font-bold bg-gradient-to-r from-slate-900 to-slate-600 bg-clip-text text-transparent">Broker Dashboard</h1>
-        </header>
+        <BrokerHeader />
         
         <main className="flex-1 p-10">
           <div className="max-w-7xl mx-auto">

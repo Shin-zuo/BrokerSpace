@@ -24,6 +24,8 @@ export class PropertyController {
         stateProvince: data.stateProvince,
         postalCode: data.postalCode,
         country: data.country || "Philippines",
+        latitude: data.latitude ? parseFloat(data.latitude) : null,
+        longitude: data.longitude ? parseFloat(data.longitude) : null,
         ...(data.imageUrls && data.imageUrls.length > 0 ? {
           images: {
             create: data.imageUrls.map((url: string, index: number) => ({
@@ -85,6 +87,8 @@ export class PropertyController {
         stateProvince: data.stateProvince,
         postalCode: data.postalCode,
         country: data.country,
+        latitude: data.latitude ? parseFloat(data.latitude) : null,
+        longitude: data.longitude ? parseFloat(data.longitude) : null,
         ...(data.imageUrls && data.imageUrls.length > 0 ? {
           images: {
             create: data.imageUrls.map((url: string) => ({ url, isPrimary: false }))

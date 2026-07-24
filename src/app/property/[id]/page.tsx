@@ -6,6 +6,7 @@ import { MapPin, Maximize, User, Phone, CheckCircle2, ChevronLeft, Calendar, Fil
 
 import PropertyGallery from '@/src/components/ui/PropertyGallery';
 import InquiryForm from '@/src/components/ui/InquiryForm';
+import PropertyMap from '@/src/components/ui/PropertyMap';
 
 export default async function PropertyDetailsPage(props: { params: Promise<{ id: string }> }) {
   const { id } = await props.params;
@@ -57,12 +58,12 @@ export default async function PropertyDetailsPage(props: { params: Promise<{ id:
                 {property.status}
               </span>
             </div>
-            <h1 className="text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight mb-4">
+            <h1 className="text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight mb-4 break-words">
               {property.title}
             </h1>
-            <div className="flex items-center gap-2 text-slate-500 text-lg">
-              <MapPin className="w-5 h-5 text-indigo-500" />
-              <span>{property.addressLine1}, {property.city}, {property.stateProvince}, {property.region}</span>
+            <div className="flex items-start gap-2 text-slate-500 text-lg">
+              <MapPin className="w-5 h-5 text-indigo-500 shrink-0 mt-1" />
+              <span className="break-words">{property.addressLine1}, {property.city}, {property.stateProvince}, {property.region}</span>
             </div>
           </div>
           <div className="md:text-right">
@@ -108,10 +109,26 @@ export default async function PropertyDetailsPage(props: { params: Promise<{ id:
             {/* Description */}
             <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm">
               <h2 className="text-2xl font-bold text-slate-900 mb-6">About this Property</h2>
-              <div className="prose prose-slate prose-lg max-w-none text-slate-600 leading-relaxed whitespace-pre-wrap">
+              <div className="prose prose-slate prose-lg max-w-none text-slate-600 leading-relaxed whitespace-pre-wrap break-words">
                 {property.description}
               </div>
             </div>
+
+            {/* Map Location */}
+            {property.latitude && property.longitude && (
+              <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm">
+                <h2 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+                  <MapPin className="w-6 h-6 text-indigo-500" />
+                  Map Location
+                </h2>
+                <div className="h-[300px] w-full relative z-0">
+                  <PropertyMap 
+                    latitude={Number(property.latitude)} 
+                    longitude={Number(property.longitude)} 
+                  />
+                </div>
+              </div>
+            )}
             
           </div>
 

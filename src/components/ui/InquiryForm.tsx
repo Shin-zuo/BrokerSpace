@@ -30,11 +30,20 @@ export default function InquiryForm({ propertyId, propertyTitle, brokerWhatsApp 
     setIsSubmitting(true);
 
     try {
-      // TODO: Implement actual API call to save to database
-      
-      // Simulating API request for UI flow
-      await new Promise(resolve => setTimeout(resolve, 800));
-      
+      // Implement actual API call to save to database
+      const response = await fetch('/api/inquiries', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          propertyId,
+          clientName: formData.name,
+          clientEmail: formData.email,
+          clientPhone: formData.phone,
+          message: formData.message,
+        }),
+      });
+
+      if (!response.ok) throw new Error('Failed to save inquiry');
       setIsSuccess(true);
       
       // Redirect to WhatsApp

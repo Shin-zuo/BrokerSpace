@@ -10,6 +10,7 @@ import { Plus, Image as ImageIcon, ChevronLeft, ChevronRight, Edit2, Trash2, X }
 
 const MySwal = withReactContent(Swal);
 import AutocompleteInput from "@/src/components/ui/AutocompleteInput";
+import LocationPicker, { LocationDetails } from "@/src/components/ui/LocationPicker";
 // @ts-ignore
 import { regions, provinces, citiesMunicipalities } from "ph-locations";
 
@@ -32,6 +33,8 @@ interface Property {
   postalCode?: string;
   description?: string;
   sizeSqm?: number | null;
+  latitude?: number | null;
+  longitude?: number | null;
   images?: PropertyImage[];
 }
 
@@ -47,6 +50,8 @@ const initialForm = {
   city: "",
   addressLine1: "",
   postalCode: "",
+  latitude: null as number | null,
+  longitude: null as number | null,
 };
 
 export default function PropertiesView() {
@@ -518,7 +523,26 @@ export default function PropertiesView() {
 
               {/* Address fields using Autocomplete */}
               <div className="md:col-span-2 border-t border-slate-100 pt-4 mt-2">
-                <h4 className="text-sm font-semibold text-slate-900 mb-4">Location Details</h4>
+                <h4 className="text-sm font-semibold text-slate-900 mb-4">Map Location</h4>
+                <div className="mb-6">
+                  <LocationPicker 
+                    initialPosition={formData.latitude && formData.longitude ? [formData.latitude, formData.longitude] : undefined}
+                    onLocationChange={(details: LocationDetails) => {
+                      setFormData(prev => ({
+                        ...prev,
+                        latitude: details.lat,
+                        longitude: details.lng,
+                        addressLine1: details.addressLine1 || prev.addressLine1,
+                        city: details.city || prev.city,
+                        stateProvince: details.stateProvince || prev.stateProvince,
+                        postalCode: details.postalCode || prev.postalCode,
+                      }));
+                    }}
+                  />
+                  <p className="text-xs text-slate-500 mt-2">Drag the pin to the exact location. The fields below will automatically update.</p>
+                </div>
+
+                <h4 className="text-sm font-semibold text-slate-900 mb-4">Address Details</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <AutocompleteInput
                     label="Region"

@@ -72,6 +72,15 @@ export default async function MarketingPage(props: {
 
   const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
+  // Serialize Prisma Decimal objects to plain numbers before passing to Client Components
+  const serializedProperties = properties.map(p => ({
+    ...p,
+    price: Number(p.price),
+    sizeSqm: p.sizeSqm !== null ? Number(p.sizeSqm) : null,
+    latitude: p.latitude !== null ? Number(p.latitude) : null,
+    longitude: p.longitude !== null ? Number(p.longitude) : null,
+  }));
+
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
       {/* Navigation */}
@@ -122,21 +131,16 @@ export default async function MarketingPage(props: {
             </h2>
           </div>
 
-          {properties.length === 0 ? (
+          {serializedProperties.length === 0 ? (
             <div className="text-center py-20 bg-white rounded-3xl border border-slate-200 border-dashed">
               <h3 className="text-xl font-semibold text-slate-700 mb-2">No properties found</h3>
               <p className="text-slate-500">Try adjusting your filters or search criteria.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {properties.map(property => {
-                const serializedProperty = {
-                  ...property,
-                  price: property.price.toString(),
-                  sizeSqm: property.sizeSqm ? property.sizeSqm.toString() : null,
-                };
-                return <PropertyCard key={property.id} property={serializedProperty as any} />;
-              })}
+              {serializedProperties.map(property => (
+                <PropertyCard key={property.id} property={property as any} />
+              ))}
             </div>
           )}
 

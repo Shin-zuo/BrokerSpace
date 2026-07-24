@@ -88,6 +88,8 @@ model Property {
   stateProvince String          @map("state_province")
   postalCode    String          @map("postal_code")
   country       String
+  latitude      Decimal?
+  longitude     Decimal?
   images        PropertyImage[]
   inquiries     Inquiry[]
   createdAt     DateTime        @default(now()) @map("created_at")
@@ -116,6 +118,7 @@ model Inquiry {
   clientEmail String?  @map("client_email")
   clientPhone String?  @map("client_phone")
   message     String
+  isRead      Boolean  @default(false) @map("is_read")
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
