@@ -6,7 +6,8 @@ import { motion } from "framer-motion";
 import { toast } from "sonner";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { Plus, Image as ImageIcon, ChevronLeft, ChevronRight, Edit2, Trash2, X } from "lucide-react";
+import { Plus, Image as ImageIcon, ChevronLeft, ChevronRight, Edit2, Trash2, X, ExternalLink } from "lucide-react";
+import Link from "next/link";
 
 const MySwal = withReactContent(Swal);
 import AutocompleteInput from "@/src/components/ui/AutocompleteInput";
@@ -79,7 +80,7 @@ export default function PropertiesView() {
   const loadProperties = async () => {
     try {
       setLoading(true);
-      const data = await propertyApi.fetchAll();
+      const data = await propertyApi.fetchMine();
       setProperties(data);
     } catch (error) {
       console.error("Failed to load properties:", error);
@@ -274,7 +275,7 @@ export default function PropertiesView() {
     .map((c: any) => ({ label: c.name, value: c.name, code: c.name }));
 
   return (
-    <div className="space-y-6">
+    <div className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
       {/* Header */}
       <div className="flex justify-between items-center glass-panel p-6 rounded-2xl">
         <div>
@@ -295,13 +296,13 @@ export default function PropertiesView() {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50 border-b border-slate-200">
-                <th className="py-3 px-6 text-sm font-medium text-slate-600">Title</th>
-                <th className="py-3 px-6 text-sm font-medium text-slate-600">Type</th>
-                <th className="py-3 px-6 text-sm font-medium text-slate-600">Location</th>
-                <th className="py-3 px-6 text-sm font-medium text-slate-600">Price</th>
-                <th className="py-3 px-6 text-sm font-medium text-slate-600">Status</th>
-                <th className="py-3 px-6 text-sm font-medium text-slate-600 text-right">Actions</th>
+              <tr className="bg-slate-50/50 border-b border-slate-200">
+                <th className="py-2.5 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Property</th>
+                <th className="py-2.5 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Type</th>
+                <th className="py-2.5 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Location</th>
+                <th className="py-2.5 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Price</th>
+                <th className="py-2.5 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
+                <th className="py-2.5 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Actions</th>
               </tr>
             </thead>
             <motion.tbody initial="hidden" animate="show" variants={{ show: { transition: { staggerChildren: 0.05 } } }}>
@@ -321,42 +322,55 @@ export default function PropertiesView() {
                     onClick={() => handleOpenModal('VIEW', property)}
                     className="border-b border-slate-100/50 hover:bg-indigo-50/30 transition-colors cursor-pointer"
                   >
-                    <td className="py-4 px-6 text-sm font-medium text-slate-900 flex items-center gap-3">
+                    <td className="py-2 px-4 text-sm font-medium text-slate-900 flex items-center gap-3">
                       {property.images && property.images.length > 0 ? (
-                        <img src={property.images[0].url} alt={property.title} className="w-10 h-10 rounded-lg object-cover bg-slate-100 border border-slate-200" />
+                        <img src={property.images[0].url} alt={property.title} className="w-12 h-8 rounded object-cover bg-slate-100 border border-slate-200 shadow-sm" />
                       ) : (
-                        <div className="w-10 h-10 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400">
-                          <ImageIcon className="w-5 h-5" />
+                        <div className="w-12 h-8 rounded bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400 shadow-sm">
+                          <ImageIcon className="w-4 h-4" />
                         </div>
                       )}
-                      {property.title}
+                      <span className="line-clamp-1 max-w-[200px]" title={property.title}>{property.title}</span>
                     </td>
-                    <td className="py-4 px-6 text-sm text-slate-600">{property.propertyType}</td>
-                    <td className="py-4 px-6 text-sm text-slate-600">{property.city}, {property.stateProvince}</td>
-                    <td className="py-4 px-6 text-sm text-slate-900 font-medium">₱{Number(property.price).toLocaleString()}</td>
-                    <td className="py-4 px-6">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                        ${property.status === 'Available' ? 'bg-emerald-100 text-emerald-800' : 
-                          property.status === 'Sold' ? 'bg-slate-100 text-slate-800' : 
-                          'bg-amber-100 text-amber-800'}`}
+                    <td className="py-2 px-4 text-sm text-slate-600 whitespace-nowrap">{property.propertyType}</td>
+                    <td className="py-2 px-4 text-sm text-slate-600 whitespace-nowrap">
+                      <span className="line-clamp-1 max-w-[150px]" title={`${property.city}, ${property.stateProvince}`}>
+                        {property.city}, {property.stateProvince}
+                      </span>
+                    </td>
+                    <td className="py-2 px-4 text-sm text-slate-900 font-semibold whitespace-nowrap">₱{Number(property.price).toLocaleString()}</td>
+                    <td className="py-2 px-4 whitespace-nowrap">
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold uppercase tracking-wider
+                        ${property.status === 'Available' ? 'bg-emerald-100/80 text-emerald-700' : 
+                          property.status === 'Sold' ? 'bg-slate-200/80 text-slate-700' : 
+                          'bg-amber-100/80 text-amber-700'}`}
                       >
                         {property.status}
                       </span>
                     </td>
-                    <td className="py-4 px-6 text-right space-x-2">
+                    <td className="py-2 px-4 text-right space-x-1 whitespace-nowrap">
+                      <Link
+                        href={`/property/${property.id}`}
+                        onClick={(e) => e.stopPropagation()}
+                        target="_blank"
+                        className="inline-flex items-center text-slate-400 hover:text-slate-900 transition-colors p-1.5 rounded hover:bg-slate-100"
+                        title="View Live"
+                      >
+                        <ExternalLink className="w-3.5 h-3.5" />
+                      </Link>
                       <button 
                         onClick={(e) => { e.stopPropagation(); handleOpenModal('EDIT', property); }}
-                        className="text-blue-600 hover:text-blue-800 transition-colors cursor-pointer p-1.5 rounded-lg hover:bg-blue-50"
+                        className="text-blue-500 hover:text-blue-700 transition-colors cursor-pointer p-1.5 rounded hover:bg-blue-50"
                         title="Edit"
                       >
-                        <Edit2 className="w-4 h-4" />
+                        <Edit2 className="w-3.5 h-3.5" />
                       </button>
                       <button 
                         onClick={(e) => handleDelete(property.id, e)}
-                        className="text-red-600 hover:text-red-800 transition-colors cursor-pointer p-1.5 rounded-lg hover:bg-red-50"
+                        className="text-red-500 hover:text-red-700 transition-colors cursor-pointer p-1.5 rounded hover:bg-red-50"
                         title="Delete"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     </td>
                   </motion.tr>
@@ -371,6 +385,7 @@ export default function PropertiesView() {
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
         title={modalMode === 'VIEW' ? "Property Details" : modalMode === 'EDIT' ? "Edit Property" : "Add New Property"}
+        maxWidth="max-w-2xl"
       >
         {modalMode === 'VIEW' && viewProperty ? (
           <div className="space-y-6">

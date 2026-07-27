@@ -3,9 +3,13 @@ import { prisma } from '@/src/lib/prisma';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { MapPin, Maximize, User, Phone, CheckCircle2, ChevronLeft, Calendar, FileText } from 'lucide-react';
-
+import BackButton from '@/src/components/ui/BackButton';
 import PropertyGallery from '@/src/components/ui/PropertyGallery';
-import InquiryForm from '@/src/components/ui/InquiryForm';
+import { ChatProvider } from '@/src/components/chat/ChatContext';
+import FloatingChat from '@/src/components/chat/FloatingChat';
+import { getSession } from '@/src/lib/auth';
+import MessageBrokerButton from './MessageBrokerButton';
+
 import PropertyMap from '@/src/components/ui/PropertyMap';
 
 export default async function PropertyDetailsPage(props: { params: Promise<{ id: string }> }) {
@@ -23,17 +27,18 @@ export default async function PropertyDetailsPage(props: { params: Promise<{ id:
     notFound();
   }
 
+  const session = await getSession();
+  const userId = session?.userId as string | undefined;
+
   const formatter = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP', minimumFractionDigits: 0 });
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col pb-24">
+    <ChatProvider>
+      <div className="min-h-screen bg-slate-50 flex flex-col pb-24">
       {/* Navigation */}
       <nav className="fixed w-full z-50 glass-panel border-b border-white/50 bg-white/70 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 text-slate-600 hover:text-indigo-600 transition-colors font-medium">
-            <ChevronLeft className="w-5 h-5" />
-            Back to Properties
-          </Link>
+          <BackButton />
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold text-sm shadow-md shadow-indigo-500/20">
               B
@@ -157,12 +162,7 @@ export default async function PropertyDetailsPage(props: { params: Promise<{ id:
                 )}
               </div>
 
-              {/* Inquiry Form */}
-              <InquiryForm 
-                propertyId={property.id} 
-                propertyTitle={property.title} 
-                brokerWhatsApp={property.broker.whatsappNumber} 
-              />
+              <MessageBrokerButton brokerId={property.broker.id} propertyId={property.id} />
 
               {/* Additional Broker Links */}
               <div className="flex flex-col gap-3 pt-6 border-t border-slate-100">
@@ -182,6 +182,8 @@ export default async function PropertyDetailsPage(props: { params: Promise<{ id:
 
         </div>
       </main>
+      {userId && <FloatingChat currentUserId={userId} />}
     </div>
+    </ChatProvider>
   );
 }

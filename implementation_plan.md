@@ -1,51 +1,56 @@
 # BrokerSpace Project Plan & Overview
 
-BrokerSpace is a platform designed to connect real estate brokers with prospective clients. It provides brokers with tools to list and manage their properties, while offering clients an intuitive marketing page to browse, filter, and inquire about properties. A standout feature is the seamless WhatsApp integration, which bridges the gap between client interest and direct broker communication.
+BrokerSpace is a private, closed-network platform designed exclusively for real estate brokers, featuring a UI/UX heavily inspired by social and developer platforms like Facebook and GitHub. It provides a feed-centric internal repository where verified brokers can discover properties, communicate via direct chat, and view personal analytics on their profiles. The public-facing application acts purely as a marketing landing page to drive broker registrations.
 
 ## Implementation Plan (Next.js, TypeScript, Node.js)
 
-### Phase 1: Foundation & Database
+### Phase 1: Foundation & Database Pivot
 - Initialize the Next.js project with TypeScript.
-- Set up the custom `src/` folder structure incorporating MVC concepts (Controllers, Models, Views).
-- Design and initialize the database schema (Users, Properties, Images, Inquiries).
-- Set up the ORM (e.g., Prisma or Mongoose) for database interactions within the Next.js API.
+- Set up the custom `src/` folder structure incorporating MVC concepts.
+- Update the database schema: Remove the `Inquiry` model and replace it with a Chat/Messaging architecture (`Conversation`, `Message`).
+- Set up the ORM (Prisma) for database interactions.
 
-### Phase 2: Broker Portal & Authentication
-- Implement secure login/registration for brokers utilizing the `src/app/(auth)` route group.
-- Develop the broker dashboard layout and sidebar.
-- Implement profile management (crucial for storing the broker's WhatsApp number).
+### Phase 2: Authentication & Global Navigation (GitHub Style)
+- Implement secure login/registration for brokers.
+- **Actionable Task:** Remove the legacy dashboard sidebar layout. Implement a global Top Navigation Bar (Logo, Feed, Messages, Avatar Dropdown for Profile/Settings).
+- Ensure the sign-in form properly redirects brokers into the authenticated feed upon successful authentication using Next.js `redirect()`.
 
-### Phase 3: Property Management & Media
-- Create CRUD interfaces for properties in the broker dashboard.
-- Implement image upload functionality for property listings (storing image URLs in the database).
-- Ensure the property creation form includes detailed address fields for frontend filtering.
+### Phase 3: Public SaaS Landing Page 
+- **Actionable Task:** Strip all public property listings from the root `src/app/page.tsx`.
+- Redesign the root page as a pure marketing landing page explaining the benefits of the platform.
 
-### Phase 4: Client-Facing Marketing Page
-- Develop the landing page showcasing available properties in the root/marketing pages.
-- Implement robust search and location-based filtering.
-- Design the detailed property view page featuring image galleries.
+### Phase 4: The Global Feed (Logged-in Home)
+- Develop the main authenticated feed (e.g., `/feed` or `/home`) where brokers see a stream of all listings on the platform.
+- Include quick action buttons (Create Property, Search) directly on this page, similar to a GitHub dashboard.
+- **Actionable Task (Todo #1):** Fix the messy UI during multiple image uploads by refactoring the image preview container to utilize CSS Grid or flexbox with fixed aspect-ratio constraints.
+- **Actionable Task (Todo #3):** Upgrade `PropertyCard.tsx` in the feed to include an interactive image slider (carousel) using Framer Motion.
 
-### Phase 5: Inquiry & WhatsApp Integration
-- Create the inquiry form on the property details page.
-- Create a Next.js API route (`src/app/api/inquiries`) to handle saving the inquiry to the DB.
-- Frontend JavaScript logic to intercept the success response and instantly redirect the client to the generated WhatsApp Click-to-Chat URL.
+### Phase 5: Direct Chat System
+- Remove the old form-based inquiry system.
+- Create a real-time (or polling-based) chat interface accessible via `/messages`.
+- Brokers can click a "Message Broker" button on a property card to initiate a chat thread with the listing owner.
 
-### Phase 6: Super Admin (Future Phase)
-- Implement role-based access control (RBAC) to differentiate between Brokers and Admins.
-- Develop a Super Admin dashboard to oversee all brokers, manage platform settings, and moderate properties.
+### Phase 6: Personal Profile Pages & Analytics
+- Implement the `/[username]` dynamic route.
+- Display the broker's public information and active listings to all authenticated users.
+- **Conditional Analytics:** If the `currentUser.id` matches the profile owner's ID, reveal a private "Analytics/Sales Reports" section on the page (similar to viewing your own GitHub contribution graph or Facebook private insights).
+
+### Phase 7: Settings & Configurations
+- Create a dedicated `/settings` page accessible exclusively via the avatar dropdown in the top navbar.
+- Allow brokers to update their profile picture, bio, contact info, and password here.
 
 ---
 
-## Database Schema
+## Database Schema (Updated)
 
-### 1. `User` (Brokers & Admins)
+### 1. `User` (Brokers)
 - `id` (Primary Key)
-- `role` (Enum: 'Broker', 'SuperAdmin') - *Default 'Broker'*
+- `username` (String, Unique) - *Used for the `/[username]` profile route*
 - `name` (String)
 - `email` (String, Unique)
 - `password` (String)
-- `whatsapp_number` (String) - *Essential for the WhatsApp redirect feature*
-- `company_name` (String, Nullable)
+- `profile_picture_url` (String, Nullable)
+- `bio` (String, Nullable)
 - `created_at`, `updated_at`
 
 ### 2. `Property`
@@ -55,74 +60,52 @@ BrokerSpace is a platform designed to connect real estate brokers with prospecti
 - `description` (Text)
 - `price` (Decimal)
 - `status` (Enum: 'Available', 'Sold', 'Draft')
-- **Address Fields (For Frontend Filtering):**
-  - `address_line_1` (String)
-  - `city` (String)
-  - `state_province` (String)
-  - `postal_code` (String)
-  - `country` (String)
+- **Address Fields:** `address_line_1`, `city`, `state_province`, `country`
+- `views_count` (Int) - *For personal analytics*
 - `created_at`, `updated_at`
 
 ### 3. `PropertyImage`
 - `id` (Primary Key)
 - `property_id` (Foreign Key -> Property.id)
-- `url` (String) - *Path or URL to the uploaded image*
-- `is_primary` (Boolean) - *Indicates the main cover image for the listing*
+- `url` (String)
+- `is_primary` (Boolean)
 - `created_at`, `updated_at`
 
-### 4. `Inquiry`
+### 4. `Conversation` (Replaces Inquiries)
 - `id` (Primary Key)
-- `property_id` (Foreign Key -> Property.id)
-- `client_name` (String)
-- `client_email` (String, Nullable)
-- `client_phone` (String, Nullable)
-- `message` (Text) - *The pre-filled message sent to WhatsApp*
-- `created_at`, `updated_at`
+- `participant_one_id` (Foreign Key -> User.id)
+- `participant_two_id` (Foreign Key -> User.id)
+- `property_id` (Optional Foreign Key -> Property.id, to link chat context)
+- `updated_at` (For sorting inbox)
+
+### 5. `Message`
+- `id` (Primary Key)
+- `conversation_id` (Foreign Key -> Conversation.id)
+- `sender_id` (Foreign Key -> User.id)
+- `content` (Text)
+- `is_read` (Boolean)
+- `created_at`
 
 ---
 
-## Folder Structure (Next.js MVC Custom Architecture)
-
-We will use a hybrid structure that leverages the Next.js App Router for routing while utilizing MVC patterns for clean separation of concerns inside the `src/` directory.
+## Folder Structure (Social-Inspired MVC)
 
 ```text
 src/
-├── api/             # Client-side API fetch wrappers and utility functions for making requests
-├── components/      # Reusable React UI components (Buttons, Cards, Modals, Forms)
-├── controllers/     # Business logic handlers used by Next.js API Routes (Server-side)
-├── models/          # Database schemas / ORM models (e.g., Prisma schema, Mongoose models)
-├── views/           # Large page-level composition components or complex layouts
-└── app/             # Next.js App Router (Routing)
-    ├── (auth)/      # Route group for authentication
+├── api/             
+├── components/      
+├── controllers/     
+├── models/          
+├── views/           
+└── app/             
+    ├── (auth)/      
     │   ├── login/
     │   └── register/
-    ├── (broker)/    # Route group for the broker dashboard
-    │   ├── dashboard/
-    │   ├── properties/
-    │   └── settings/
-    ├── api/         # Next.js API Routes (Backend Endpoints)
-    │   ├── properties/
-    │   ├── inquiries/
-    │   └── auth/
-    ├── property/    # Public property details pages (e.g., /property/[id])
-    └── page.tsx     # The main marketing landing page
-```
-
----
-
-## Broker Dashboard Sidebar
-
-The sidebar will be the primary navigation tool for authenticated brokers in their dashboard.
-
-```text
-Main Navigation
- ├── 📊 Dashboard (Overview of stats: Total Active Properties, Recent Inquiries)
- ├── 🏢 Properties
- │    ├── View All Properties
- │    ├── Add New Property (with multi-image upload support)
- │    └── Drafts
- ├── 💬 Inquiries (Log of all form submissions that were saved to the DB)
- └── ⚙️ Settings
-      ├── Profile (Update WhatsApp Number and details here)
-      └── Account Security
+    ├── (app)/       # Authenticated layout featuring the Top Navbar (No Sidebar)
+    │   ├── feed/    # The main global feed (Logged-in Home)
+    │   ├── messages/# Chat inbox
+    │   ├── settings/# Account configuration
+    │   └── [username]/ # Personal profile & private analytics route
+    ├── api/         
+    └── page.tsx     # The main marketing landing page (No Listings)
 ```

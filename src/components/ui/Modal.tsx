@@ -9,9 +9,10 @@ interface ModalProps {
   onClose: () => void;
   title: string;
   children: React.ReactNode;
+  maxWidth?: string;
 }
 
-export default function Modal({ isOpen, onClose, title, children }: ModalProps) {
+export default function Modal({ isOpen, onClose, title, children, maxWidth = "max-w-4xl" }: ModalProps) {
   return (
     <AnimatePresence>
       {isOpen && (
@@ -29,7 +30,7 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="bg-white/95 backdrop-blur-md w-full max-w-4xl max-h-[90vh] rounded-2xl shadow-2xl overflow-hidden flex flex-col pointer-events-auto border border-white/50"
+              className={`bg-white/95 backdrop-blur-md w-full ${maxWidth} max-h-[90vh] rounded-2xl shadow-2xl overflow-hidden flex flex-col pointer-events-auto border border-white/50`}
             >
               <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-white/50">
                 <h3 className="text-xl font-bold text-slate-900">{title}</h3>

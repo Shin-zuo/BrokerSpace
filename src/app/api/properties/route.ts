@@ -4,9 +4,23 @@ import fs from "fs";
 import path from "path";
 import { getSession } from "@/src/lib/auth";
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const properties = await PropertyController.getAll();
+    const { searchParams } = new URL(request.url);
+    const mine = searchParams.get("mine");
+    let brokerId: string | undefined = undefined;
+
+    if (mine) {
+      const session = await getSession();
+      if (!session || !session.userId) {
+        return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+      }
+      if (session.brokerId) {
+        brokerId = session.brokerId as string;
+      }
+    }
+
+    const properties = await PropertyController.getAll(brokerId);
     return NextResponse.json({ success: true, data: properties });
   } catch (error: any) {
     console.error("GET /api/properties error:", error);

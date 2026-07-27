@@ -1,8 +1,9 @@
 import { prisma } from "@/src/lib/prisma";
 
 export class PropertyController {
-  static async getAll() {
+  static async getAll(brokerId?: string) {
     return await prisma.property.findMany({
+      where: brokerId ? { brokerId } : undefined,
       include: { images: true },
       orderBy: { createdAt: 'desc' }
     });
@@ -131,8 +132,11 @@ export class PropertyController {
       where: { propertyId: id }
     });
 
-    await prisma.inquiry.deleteMany({
-      where: { propertyId: id }
+    await prisma.like.deleteMany({ where: { propertyId: id } });
+    await prisma.savedProperty.deleteMany({ where: { propertyId: id } });
+    await prisma.conversation.updateMany({ 
+      where: { propertyId: id }, 
+      data: { propertyId: null } 
     });
 
     return await prisma.property.delete({

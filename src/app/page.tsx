@@ -1,86 +1,8 @@
 import React from 'react';
 import Link from 'next/link';
-import { prisma } from '@/src/lib/prisma';
-import PropertyCard from '@/src/components/ui/PropertyCard';
-import FilterBar from '@/src/components/ui/FilterBar';
-import { Prisma } from '@/src/generated/prisma/client';
+import { Building2, Users, ShieldCheck, ArrowRight, TrendingUp, MessageCircle } from 'lucide-react';
 
-const ITEMS_PER_PAGE = 9;
-
-export default async function MarketingPage(props: {
-  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
-}) {
-  const searchParams = await props.searchParams;
-  
-  const page = typeof searchParams?.page === 'string' ? parseInt(searchParams.page) : 1;
-  const q = typeof searchParams?.q === 'string' ? searchParams.q : '';
-  const type = typeof searchParams?.type === 'string' ? searchParams.type : '';
-  const minPrice = typeof searchParams?.minPrice === 'string' ? parseFloat(searchParams.minPrice) : null;
-  const maxPrice = typeof searchParams?.maxPrice === 'string' ? parseFloat(searchParams.maxPrice) : null;
-  const minSize = typeof searchParams?.minSize === 'string' ? parseFloat(searchParams.minSize) : null;
-  const maxSize = typeof searchParams?.maxSize === 'string' ? parseFloat(searchParams.maxSize) : null;
-  const region = typeof searchParams?.region === 'string' ? searchParams.region : '';
-  const province = typeof searchParams?.province === 'string' ? searchParams.province : '';
-  const city = typeof searchParams?.city === 'string' ? searchParams.city : '';
-
-  // Build the where clause
-  const where: Prisma.PropertyWhereInput = {
-    status: 'Available',
-  };
-
-  if (q) {
-    where.OR = [
-      { title: { contains: q, mode: 'insensitive' } },
-      { addressLine1: { contains: q, mode: 'insensitive' } },
-    ];
-  }
-
-  if (region) where.region = region;
-  if (province) where.stateProvince = province;
-  if (city) where.city = city;
-
-  if (type) {
-    // Assuming PropertyType enum matches the string
-    where.propertyType = type as any;
-  }
-
-  if (minPrice !== null || maxPrice !== null) {
-    where.price = {};
-    if (minPrice !== null && !isNaN(minPrice)) where.price.gte = minPrice;
-    if (maxPrice !== null && !isNaN(maxPrice)) where.price.lte = maxPrice;
-  }
-
-  if (minSize !== null || maxSize !== null) {
-    where.sizeSqm = {};
-    if (minSize !== null && !isNaN(minSize)) where.sizeSqm.gte = minSize;
-    if (maxSize !== null && !isNaN(maxSize)) where.sizeSqm.lte = maxSize;
-  }
-
-  const [properties, totalCount] = await Promise.all([
-    prisma.property.findMany({
-      where,
-      include: {
-        images: true,
-        broker: true,
-      },
-      orderBy: { createdAt: 'desc' },
-      skip: (page - 1) * ITEMS_PER_PAGE,
-      take: ITEMS_PER_PAGE,
-    }),
-    prisma.property.count({ where }),
-  ]);
-
-  const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
-
-  // Serialize Prisma Decimal objects to plain numbers before passing to Client Components
-  const serializedProperties = properties.map(p => ({
-    ...p,
-    price: Number(p.price),
-    sizeSqm: p.sizeSqm !== null ? Number(p.sizeSqm) : null,
-    latitude: p.latitude !== null ? Number(p.latitude) : null,
-    longitude: p.longitude !== null ? Number(p.longitude) : null,
-  }));
-
+export default function MarketingPage() {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
       {/* Navigation */}
@@ -104,86 +26,82 @@ export default async function MarketingPage(props: {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
+      <section className="relative pt-40 pb-24 lg:pt-56 lg:pb-32 overflow-hidden flex-1 flex flex-col justify-center items-center text-center">
         <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
           <div className="absolute top-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-indigo-100/60 blur-3xl" />
           <div className="absolute bottom-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-blue-100/60 blur-3xl" />
         </div>
         
-        <div className="max-w-7xl mx-auto px-6 text-center">
-          <h1 className="text-5xl lg:text-7xl font-extrabold text-slate-900 tracking-tight mb-6 leading-tight">
-            Find your next <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-blue-500">dream property</span>
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-600 text-sm font-medium mb-8">
+            <span className="flex h-2 w-2 rounded-full bg-indigo-600 animate-pulse"></span>
+            The Exclusive Network for Verified Real Estate Brokers
+          </div>
+          <h1 className="text-5xl lg:text-7xl font-extrabold text-slate-900 tracking-tight mb-8 leading-[1.1]">
+            Close deals faster in a <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">private broker network</span>
           </h1>
-          <p className="text-lg lg:text-xl text-slate-600 max-w-2xl mx-auto mb-12">
-            Discover premium real estate properties from top brokers. Filter by price, size, and location to find exactly what you're looking for.
+          <p className="text-lg lg:text-2xl text-slate-600 max-w-3xl mx-auto mb-12 leading-relaxed">
+            Join thousands of licensed professionals to co-broke, share off-market listings, and communicate securely in real-time.
           </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link href="/signup" className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-8 py-4 rounded-full shadow-lg shadow-indigo-500/30 transition-all hover:scale-105 flex items-center justify-center gap-2 text-lg">
+              Join the Network <ArrowRight className="w-5 h-5" />
+            </Link>
+            <Link href="/login" className="w-full sm:w-auto bg-white hover:bg-slate-50 text-slate-700 font-bold px-8 py-4 rounded-full shadow-sm border border-slate-200 transition-all flex items-center justify-center gap-2 text-lg">
+              Sign in to your account
+            </Link>
+          </div>
         </div>
       </section>
 
-      {/* Filter & Properties Section */}
-      <section className="flex-1 pb-24">
+      {/* Features Grid */}
+      <section className="py-24 bg-white border-t border-slate-200">
         <div className="max-w-7xl mx-auto px-6">
-          <FilterBar />
-          
-          <div className="mt-16 mb-8 flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-slate-900">
-              Featured Properties <span className="text-slate-400 text-lg font-normal">({totalCount})</span>
-            </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            <div className="flex flex-col items-center text-center">
+              <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-6 shadow-inner">
+                <ShieldCheck className="w-8 h-8" />
+              </div>
+              <h3 className="text-2xl font-bold text-slate-900 mb-4">Verified Professionals Only</h3>
+              <p className="text-slate-600 leading-relaxed">
+                Every member is verified. Say goodbye to spam and deal directly with licensed, serious real estate brokers.
+              </p>
+            </div>
+            <div className="flex flex-col items-center text-center">
+              <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mb-6 shadow-inner">
+                <MessageCircle className="w-8 h-8" />
+              </div>
+              <h3 className="text-2xl font-bold text-slate-900 mb-4">Real-Time Direct Chat</h3>
+              <p className="text-slate-600 leading-relaxed">
+                Negotiate and clarify details instantly. Our built-in chat keeps your deals moving without needing external apps.
+              </p>
+            </div>
+            <div className="flex flex-col items-center text-center">
+              <div className="w-16 h-16 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center mb-6 shadow-inner">
+                <TrendingUp className="w-8 h-8" />
+              </div>
+              <h3 className="text-2xl font-bold text-slate-900 mb-4">Personal Analytics</h3>
+              <p className="text-slate-600 leading-relaxed">
+                Track exactly how many brokers are viewing your shared listings and optimize your sales strategy with real data.
+              </p>
+            </div>
           </div>
-
-          {serializedProperties.length === 0 ? (
-            <div className="text-center py-20 bg-white rounded-3xl border border-slate-200 border-dashed">
-              <h3 className="text-xl font-semibold text-slate-700 mb-2">No properties found</h3>
-              <p className="text-slate-500">Try adjusting your filters or search criteria.</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {serializedProperties.map(property => (
-                <PropertyCard key={property.id} property={property as any} />
-              ))}
-            </div>
-          )}
-
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="mt-16 flex items-center justify-center gap-2">
-              {Array.from({ length: totalPages }).map((_, i) => {
-                const p = i + 1;
-                // Reconstruct search params
-                const params = new URLSearchParams(searchParams as Record<string, string>);
-                params.set('page', p.toString());
-                
-                return (
-                  <Link
-                    key={p}
-                    href={`/?${params.toString()}`}
-                    className={`w-10 h-10 rounded-xl flex items-center justify-center font-medium transition-colors ${
-                      page === p 
-                        ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/20' 
-                        : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
-                    }`}
-                  >
-                    {p}
-                  </Link>
-                );
-              })}
-            </div>
-          )}
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-slate-200 py-12">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
+      <footer className="bg-slate-900 border-t border-slate-800 py-16">
+        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center text-white font-bold text-sm">
+            <div className="w-10 h-10 rounded-xl bg-indigo-500 flex items-center justify-center text-white font-bold text-xl shadow-md">
               B
             </div>
-            <span className="text-xl font-bold text-slate-900">BrokerSpace</span>
+            <span className="text-2xl font-bold text-white">BrokerSpace</span>
           </div>
-          <p className="text-slate-500 text-sm">© {new Date().getFullYear()} BrokerSpace. All rights reserved.</p>
+          <p className="text-slate-400 font-medium">© {new Date().getFullYear()} BrokerSpace. Built for the modern real estate broker.</p>
         </div>
       </footer>
     </div>
   );
 }
+

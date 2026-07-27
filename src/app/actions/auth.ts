@@ -74,5 +74,5 @@ export async function signupAction(formData: FormData) {
     return { success: false, error: 'An unexpected error occurred during signup.' };
   }
   
-  redirect('/dashboard');
+  redirect('/feed');
 }

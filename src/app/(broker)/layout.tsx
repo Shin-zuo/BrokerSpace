@@ -1,27 +1,33 @@
 import React from "react";
-import Sidebar from "@/src/components/layout/Sidebar";
-import BrokerHeader from "@/src/components/layout/BrokerHeader";
+import Navbar from "@/src/components/layout/Navbar";
+import { getSession } from "@/src/lib/auth";
+import { prisma } from "@/src/lib/prisma";
+import { ChatProvider } from "@/src/components/chat/ChatContext";
+import FloatingChat from "@/src/components/chat/FloatingChat";
 
-export default function BrokerLayout({
+export default async function BrokerLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await getSession();
+  let user = null;
+  if (session && session.userId) {
+    user = await prisma.user.findUnique({
+      where: { id: session.userId as string },
+      include: { broker: true }
+    });
+  }
+
   return (
-    <div className="min-h-screen flex text-slate-900">
-      {/* Sidebar Component */}
-      <Sidebar />
-      
-      {/* Main Content Area */}
-      <div className="flex-1 ml-64 flex flex-col min-h-screen relative z-10">
-        <BrokerHeader />
-        
-        <main className="flex-1 p-10">
-          <div className="max-w-7xl mx-auto">
-            {children}
-          </div>
+    <ChatProvider>
+      <div className="min-h-screen bg-slate-50 text-slate-900 pt-16">
+        <Navbar user={user} />
+        <main className="w-full h-full">
+          {children}
         </main>
+        {user && <FloatingChat currentUserId={user.id} />}
       </div>
-    </div>
+    </ChatProvider>
   );
 }

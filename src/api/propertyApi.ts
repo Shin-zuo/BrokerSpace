@@ -6,6 +6,13 @@ export const propertyApi = {
     return json.data;
   },
 
+  async fetchMine() {
+    const res = await fetch("/api/properties?mine=true");
+    if (!res.ok) throw new Error("Failed to fetch properties");
+    const json = await res.json();
+    return json.data;
+  },
+
   async create(data: FormData | any) {
     const res = await fetch("/api/properties", {
       method: "POST",

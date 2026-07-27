@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server';
 import { getSession } from './lib/auth';
 
 // Add the routes you want to protect here
-const protectedRoutes = ['/properties'];
+const protectedRoutes = ['/properties', '/feed', '/messages', '/settings'];
 
 export async function middleware(req: NextRequest) {
   const path = req.nextUrl.pathname;
@@ -20,11 +20,11 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  // Prevent logged-in users from accessing the login or signup page
-  if (path === '/login' || path === '/signup') {
+  // Prevent logged-in users from accessing the login, signup, or public landing page
+  if (path === '/login' || path === '/signup' || path === '/') {
     const session = await getSession(req);
     if (session) {
-      return NextResponse.redirect(new URL('/properties', req.url));
+      return NextResponse.redirect(new URL('/feed', req.url));
     }
   }
 
