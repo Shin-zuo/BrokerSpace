@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import useSWR from 'swr';
 import { Search, Send, User, Loader2, MessageSquare } from 'lucide-react';
 import { useChat } from '@/src/components/chat/ChatContext';
+import BackButton from '@/src/components/ui/BackButton';
 
 const fetcher = (url: string) => fetch(url).then(res => res.json());
 
@@ -64,6 +65,9 @@ export default function MessagesPage() {
         {/* Left Sidebar - Chat List */}
         <div className="w-80 border-r border-slate-200 flex flex-col bg-slate-50 shrink-0">
           <div className="p-4 border-b border-slate-200 bg-white">
+            <div className="mb-2">
+              <BackButton />
+            </div>
             <h2 className="text-xl font-bold text-slate-900 mb-4">Messages</h2>
             <div className="relative">
               <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />

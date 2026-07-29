@@ -4,6 +4,7 @@ import PropertyCard from '@/src/components/ui/PropertyCard';
 import Link from 'next/link';
 import { Search, User, Building2 } from 'lucide-react';
 import { getSession } from '@/src/lib/auth';
+import BackButton from '@/src/components/ui/BackButton';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,10 +17,15 @@ export default async function SearchPage(props: { searchParams: Promise<{ q?: st
   
   if (!query) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
-        <Search className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-        <h1 className="text-2xl font-bold text-slate-900 mb-2">Search BrokerSpace</h1>
-        <p className="text-slate-500">Enter a keyword to search for properties and brokers.</p>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="mb-4">
+          <BackButton />
+        </div>
+        <div className="py-8 text-center">
+          <Search className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+          <h1 className="text-2xl font-bold text-slate-900 mb-2">Search BrokerSpace</h1>
+          <p className="text-slate-500">Enter a keyword to search for properties and brokers.</p>
+        </div>
       </div>
     );
   }
@@ -67,6 +73,9 @@ export default async function SearchPage(props: { searchParams: Promise<{ q?: st
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="mb-4">
+        <BackButton />
+      </div>
       <div className="mb-8 border-b border-slate-200 pb-6">
         <h1 className="text-2xl font-bold text-slate-900">Search results for "{query}"</h1>
         <p className="text-slate-500 mt-1">Found {properties.length} properties and {brokers.length} brokers.</p>

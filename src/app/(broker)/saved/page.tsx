@@ -4,6 +4,7 @@ import PropertyCard from '@/src/components/ui/PropertyCard';
 import { getSession } from '@/src/lib/auth';
 import { redirect } from 'next/navigation';
 import { Bookmark } from 'lucide-react';
+import BackButton from '@/src/components/ui/BackButton';
 
 export default async function SavedPropertiesPage() {
   const session = await getSession();
@@ -44,6 +45,9 @@ export default async function SavedPropertiesPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="mb-4">
+        <BackButton />
+      </div>
       <div className="flex items-center gap-3 mb-8">
         <div className="w-12 h-12 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center">
           <Bookmark className="w-6 h-6 fill-indigo-600" />

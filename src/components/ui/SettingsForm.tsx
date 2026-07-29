@@ -8,6 +8,7 @@ export default function SettingsForm({ initialData }: { initialData: Broker }) {
   const [formData, setFormData] = useState<Partial<Broker>>({
     name: initialData.name || '',
     whatsappNumber: initialData.whatsappNumber || '',
+    contactNumber: (initialData as any).contactNumber || '',
     companyName: initialData.companyName || '',
     licenseNumber: initialData.licenseNumber || '',
     bio: initialData.bio || '',
@@ -214,15 +215,38 @@ export default function SettingsForm({ initialData }: { initialData: Broker }) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div className="space-y-1.5">
               <label htmlFor="whatsappNumber" className="text-sm font-semibold text-slate-700">WhatsApp Number</label>
-              <input
-                id="whatsappNumber"
-                type="text"
-                required
-                value={formData.whatsappNumber || ''}
-                onChange={(e) => setFormData({...formData, whatsappNumber: e.target.value})}
-                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
-                placeholder="+63 912 345 6789"
-              />
+              <div className="relative flex items-center">
+                <span className="absolute left-4 text-slate-500 font-medium">+63</span>
+                <input
+                  id="whatsappNumber"
+                  type="text"
+                  required
+                  value={(formData.whatsappNumber || '').replace(/^\+63\s*/, '')}
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/\D/g, '').slice(0, 10);
+                    setFormData({...formData, whatsappNumber: val ? `+63${val}` : ''});
+                  }}
+                  className="w-full pl-12 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                  placeholder="9123456789"
+                />
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              <label htmlFor="contactNumber" className="text-sm font-semibold text-slate-700">Contact Number</label>
+              <div className="relative flex items-center">
+                <span className="absolute left-4 text-slate-500 font-medium">+63</span>
+                <input
+                  id="contactNumber"
+                  type="text"
+                  value={((formData as any).contactNumber || '').replace(/^\+63\s*/, '')}
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/\D/g, '').slice(0, 10);
+                    setFormData({...formData, contactNumber: val ? `+63${val}` : ''});
+                  }}
+                  className="w-full pl-12 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                  placeholder="9123456789"
+                />
+              </div>
             </div>
             <div className="space-y-1.5">
               <label htmlFor="publicEmail" className="text-sm font-semibold text-slate-700">Public Email</label>

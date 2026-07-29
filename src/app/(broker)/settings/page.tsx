@@ -5,6 +5,7 @@ import { verifyToken } from '@/src/lib/auth';
 import { prisma } from '@/src/lib/prisma';
 import SettingsForm from '@/src/components/ui/SettingsForm';
 import { Settings } from 'lucide-react';
+import BackButton from '@/src/components/ui/BackButton';
 
 export default async function SettingsPage() {
   const cookieStore = await cookies();
@@ -29,6 +30,9 @@ export default async function SettingsPage() {
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
+      <div className="mb-2">
+        <BackButton />
+      </div>
       <div className="flex items-center gap-3">
         <div className="p-3 bg-indigo-500/10 text-indigo-600 rounded-xl w-fit">
           <Settings className="w-6 h-6" />

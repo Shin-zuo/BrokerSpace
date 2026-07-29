@@ -68,7 +68,9 @@ export default async function PropertyDetailsPage(props: { params: Promise<{ id:
             </h1>
             <div className="flex items-start gap-2 text-slate-500 text-lg">
               <MapPin className="w-5 h-5 text-indigo-500 shrink-0 mt-1" />
-              <span className="break-words">{property.addressLine1}, {property.city}, {property.stateProvince}, {property.region}</span>
+              <span className="break-words">
+                {[property.addressLine1, property.city, property.stateProvince, property.region].filter(Boolean).join(', ') || 'Address not specified'}
+              </span>
             </div>
           </div>
           <div className="md:text-right">
@@ -102,7 +104,7 @@ export default async function PropertyDetailsPage(props: { params: Promise<{ id:
               <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col gap-2">
                 <MapPin className="w-6 h-6 text-indigo-500" />
                 <span className="text-sm font-semibold text-slate-500 uppercase">Location</span>
-                <span className="text-lg font-bold text-slate-900 line-clamp-1">{property.city}</span>
+                <span className="text-lg font-bold text-slate-900 line-clamp-1">{property.city || 'N/A'}</span>
               </div>
               <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col gap-2">
                 <Calendar className="w-6 h-6 text-indigo-500" />

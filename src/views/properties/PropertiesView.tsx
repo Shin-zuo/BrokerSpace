@@ -6,7 +6,8 @@ import { motion } from "framer-motion";
 import { toast } from "sonner";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { Plus, Image as ImageIcon, ChevronLeft, ChevronRight, Edit2, Trash2, X, ExternalLink } from "lucide-react";
+import { Loader2, Plus, Filter, Search, Building2, MapPin, Eye, Edit, Trash2, Tag, ChevronDown, Check, Home, ExternalLink, Image as ImageIcon, ChevronLeft, ChevronRight, Edit2, Trash2 as Trash2Icon, X } from "lucide-react";
+import BackButton from '@/src/components/ui/BackButton';
 import Link from "next/link";
 
 const MySwal = withReactContent(Swal);
@@ -75,6 +76,11 @@ export default function PropertiesView() {
 
   useEffect(() => {
     loadProperties();
+    const searchParams = new URLSearchParams(window.location.search);
+    if (searchParams.get('add') === 'true') {
+      handleOpenModal('CREATE');
+      window.history.replaceState({}, '', window.location.pathname);
+    }
   }, []);
 
   const loadProperties = async () => {
@@ -275,12 +281,12 @@ export default function PropertiesView() {
     .map((c: any) => ({ label: c.name, value: c.name, code: c.name }));
 
   return (
-    <div className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
-      {/* Header */}
-      <div className="flex justify-between items-center glass-panel p-6 rounded-2xl">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
-          <h2 className="text-xl font-bold text-slate-900">Properties</h2>
-          <p className="text-sm text-slate-500">Manage your real estate listings</p>
+          <div className="mb-2"><BackButton /></div>
+          <h1 className="text-2xl font-bold text-slate-900">My Properties</h1>
+          <p className="text-slate-500">Manage and track all your real estate listings</p>
         </div>
         <button
           onClick={() => handleOpenModal('CREATE')}
@@ -352,7 +358,6 @@ export default function PropertiesView() {
                       <Link
                         href={`/property/${property.id}`}
                         onClick={(e) => e.stopPropagation()}
-                        target="_blank"
                         className="inline-flex items-center text-slate-400 hover:text-slate-900 transition-colors p-1.5 rounded hover:bg-slate-100"
                         title="View Live"
                       >
@@ -603,7 +608,7 @@ export default function PropertiesView() {
 
                   <div className="flex flex-col gap-1.5 md:col-span-2">
                     <label className="text-sm font-medium text-slate-700">Address Line 1 (Street, Barangay)</label>
-                    <input required name="addressLine1" value={formData.addressLine1} onChange={handleChange} className="w-full px-3 py-2 border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors text-sm text-slate-900" placeholder="e.g. 123 Main St, Brgy. San Jose" />
+                    <input name="addressLine1" value={formData.addressLine1} onChange={handleChange} className="w-full px-3 py-2 border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors text-sm text-slate-900" placeholder="e.g. 123 Main St, Brgy. San Jose" />
                   </div>
                 </div>
               </div>

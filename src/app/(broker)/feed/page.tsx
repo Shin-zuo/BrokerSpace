@@ -38,6 +38,30 @@ export default async function FeedPage() {
     isSaved: property.saves && property.saves.length > 0,
   }));
 
+  // Market Insights calculation
+  const regionCounts: Record<string, number> = {};
+  let totalPrice = 0;
+  rawProperties.forEach(p => {
+    if (p.region) {
+      regionCounts[p.region] = (regionCounts[p.region] || 0) + 1;
+    }
+    totalPrice += Number(p.price);
+  });
+  
+  let topRegion = 'N/A';
+  let maxCount = 0;
+  for (const [region, count] of Object.entries(regionCounts)) {
+    if (count > maxCount) {
+      maxCount = count;
+      topRegion = region;
+    }
+  }
+
+  const avgPrice = rawProperties.length > 0 ? totalPrice / rawProperties.length : 0;
+  const formattedAvgPrice = avgPrice >= 1000000 
+    ? `₱ ${(avgPrice / 1000000).toFixed(1)}M` 
+    : `₱ ${Math.round(avgPrice).toLocaleString()}`;
+
   return (
     <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
       <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] xl:grid-cols-[280px_1fr_300px] gap-6 lg:gap-8 items-start">
@@ -96,10 +120,10 @@ export default async function FeedPage() {
                    <UserIcon className="w-5 h-5" />
               )}
             </div>
-            <Link href="/properties" className="flex-1 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-500 px-4 py-2.5 rounded-full text-sm text-left transition-colors cursor-pointer">
+            <Link href="/properties?add=true" className="flex-1 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-500 px-4 py-2.5 rounded-full text-sm text-left transition-colors cursor-pointer">
               Share a new listing with the network...
             </Link>
-            <Link href="/properties" className="shrink-0 bg-indigo-50 text-indigo-600 p-2.5 rounded-full hover:bg-indigo-100 transition-colors cursor-pointer shadow-sm">
+            <Link href="/properties?add=true" className="shrink-0 bg-indigo-50 text-indigo-600 p-2.5 rounded-full hover:bg-indigo-100 transition-colors cursor-pointer shadow-sm">
               <Plus className="w-5 h-5" />
             </Link>
           </div>
@@ -126,11 +150,11 @@ export default async function FeedPage() {
             <div className="space-y-4">
               <div>
                 <p className="text-xs text-slate-500 font-medium uppercase tracking-wider mb-1">Top Region</p>
-                <p className="text-sm font-semibold text-slate-900">Metro Manila</p>
+                <p className="text-sm font-semibold text-slate-900">{topRegion}</p>
               </div>
               <div>
                 <p className="text-xs text-slate-500 font-medium uppercase tracking-wider mb-1">Avg. Property Price</p>
-                <p className="text-sm font-semibold text-slate-900">₱ 15.2M</p>
+                <p className="text-sm font-semibold text-slate-900">{formattedAvgPrice}</p>
               </div>
             </div>
           </div>

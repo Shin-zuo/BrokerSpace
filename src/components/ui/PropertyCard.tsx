@@ -41,7 +41,7 @@ export default function PropertyCard({ property }: { property: PropertyWithRelat
   const [isOpeningChat, setIsOpeningChat] = useState(false);
   const chatContext = useChat();
   const formatter = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP', minimumFractionDigits: 0 });
-  const images = property.images && property.images.length > 0 ? property.images : [{ url: '/placeholder.jpg' } as any];
+  const images = property.images || [];
 
   const nextImage = (e: React.MouseEvent) => {
     e.preventDefault(); e.stopPropagation();
@@ -96,10 +96,14 @@ export default function PropertyCard({ property }: { property: PropertyWithRelat
           </h3>
         </Link>
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-slate-600 font-medium">
-          <div className="flex items-center gap-1.5">
-            <MapPin className="w-4 h-4 text-slate-400" />
-            <span className="line-clamp-1">{property.city}, {property.stateProvince}</span>
-          </div>
+          { (property.city || property.stateProvince) && (
+            <div className="flex items-center gap-1.5">
+              <MapPin className="w-4 h-4 text-slate-400" />
+              <span className="line-clamp-1">
+                {[property.city, property.stateProvince].filter(Boolean).join(', ')}
+              </span>
+            </div>
+          )}
           {property.sizeSqm && (
             <div className="flex items-center gap-1.5">
               <Maximize className="w-4 h-4 text-slate-400" />
@@ -113,31 +117,33 @@ export default function PropertyCard({ property }: { property: PropertyWithRelat
       </div>
 
       {/* Image Gallery */}
-      <div className="relative group h-[350px] sm:h-[450px] w-full bg-slate-100 mt-2">
-        <Link href={`/property/${property.id}`} className="block w-full h-full cursor-pointer">
-          <img
-            src={images[currentImage].url}
-            alt={property.title}
-            className="w-full h-full object-cover"
-          />
-        </Link>
-        
-        {images.length > 1 && (
-          <>
-            <button onClick={prevImage} className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 text-slate-800 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-white shadow-md z-10 cursor-pointer hover:scale-105">
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <button onClick={nextImage} className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 text-slate-800 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-white shadow-md z-10 cursor-pointer hover:scale-105">
-              <ChevronRight className="w-5 h-5" />
-            </button>
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-10 bg-black/30 px-3 py-2 rounded-full backdrop-blur-md">
-              {images.map((_, idx) => (
-                <div key={idx} className={`h-1.5 rounded-full transition-all ${idx === currentImage ? 'bg-white w-4' : 'bg-white/50 w-1.5'}`} />
-              ))}
-            </div>
-          </>
-        )}
-      </div>
+      {property.images && property.images.length > 0 && (
+        <div className="relative group h-[350px] sm:h-[450px] w-full bg-slate-100 mt-2">
+          <Link href={`/property/${property.id}`} className="block w-full h-full cursor-pointer">
+            <img
+              src={images[currentImage].url}
+              alt={property.title}
+              className="w-full h-full object-cover"
+            />
+          </Link>
+          
+          {images.length > 1 && (
+            <>
+              <button onClick={prevImage} className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 text-slate-800 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-white shadow-md z-10 cursor-pointer hover:scale-105">
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <button onClick={nextImage} className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 text-slate-800 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-white shadow-md z-10 cursor-pointer hover:scale-105">
+                <ChevronRight className="w-5 h-5" />
+              </button>
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-10 bg-black/30 px-3 py-2 rounded-full backdrop-blur-md">
+                {images.map((_, idx) => (
+                  <div key={idx} className={`h-1.5 rounded-full transition-all ${idx === currentImage ? 'bg-white w-4' : 'bg-white/50 w-1.5'}`} />
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+      )}
 
       {/* Footer: Social Actions */}
       <div className="p-2 border-t border-slate-100 flex items-center gap-1">

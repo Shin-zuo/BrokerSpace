@@ -3,6 +3,7 @@ import { prisma } from '@/src/lib/prisma';
 import { getSession } from '@/src/lib/auth';
 import { redirect } from 'next/navigation';
 import NetworkView from './NetworkView';
+import BackButton from '@/src/components/ui/BackButton';
 
 export default async function NetworkPage() {
   const session = await getSession();
@@ -38,6 +39,9 @@ export default async function NetworkPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="mb-4">
+        <BackButton />
+      </div>
       <NetworkView 
         currentUserId={currentUserId} 
         initialConnections={connections} 

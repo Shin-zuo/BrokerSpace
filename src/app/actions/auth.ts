@@ -13,6 +13,7 @@ export async function logoutAction() {
 export async function signupAction(formData: FormData) {
   const name = formData.get('name') as string;
   const whatsappNumber = formData.get('whatsappNumber') as string;
+  const contactNumber = formData.get('contactNumber') as string;
   const companyName = formData.get('companyName') as string;
   const licenseNumber = formData.get('licenseNumber') as string;
   const facebookUrl = formData.get('facebookUrl') as string;
@@ -46,6 +47,7 @@ export async function signupAction(formData: FormData) {
         data: {
           name,
           whatsappNumber,
+          contactNumber: contactNumber || null,
           companyName: companyName || null,
           licenseNumber: licenseNumber || null,
           facebookUrl: facebookUrl || null,

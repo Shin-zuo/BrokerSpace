@@ -3,6 +3,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Building2, MessageSquare, AlertCircle } from "lucide-react";
+import BackButton from '@/src/components/ui/BackButton';
 
 export default function DashboardPage() {
   const containerVariants = {
@@ -25,6 +26,9 @@ export default function DashboardPage() {
       initial="hidden"
       animate="show"
     >
+      <div className="mb-2">
+        <BackButton />
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Stat Card 1 */}
         <motion.div variants={itemVariants} className="glass-card p-6 rounded-2xl relative overflow-hidden group">

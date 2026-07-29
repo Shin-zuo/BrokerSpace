@@ -75,6 +75,7 @@ model Broker {
   id                String     @id @default(uuid())
   name              String
   whatsappNumber    String     @map("whatsapp_number")
+  contactNumber     String?    @map("contact_number")
   companyName       String?    @map("company_name")
   licenseNumber     String?    @map("license_number")
   bio               String?

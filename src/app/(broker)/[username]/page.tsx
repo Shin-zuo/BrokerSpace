@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { User, Settings, Edit, Trash2, Eye, Heart, Bookmark, MessageSquare } from 'lucide-react';
 import DeletePropertyButton from './DeletePropertyButton';
 import ProfileActions from '@/src/components/profile/ProfileActions';
+import BackButton from '@/src/components/ui/BackButton';
 
 export default async function ProfilePage(props: { params: Promise<{ username: string }> }) {
   const params = await props.params;
@@ -68,6 +69,9 @@ export default async function ProfilePage(props: { params: Promise<{ username: s
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="mb-4">
+        <BackButton />
+      </div>
       {/* Profile Header */}
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-8">
         <div className="h-32 bg-gradient-to-r from-indigo-500 to-purple-600 relative">

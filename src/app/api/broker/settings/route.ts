@@ -36,7 +36,7 @@ export async function PATCH(req: NextRequest) {
     // Whitelist allowed fields for update
     const updateData: any = {};
     const allowedFields = [
-      'name', 'whatsappNumber', 'companyName', 'licenseNumber', 'bio',
+      'name', 'whatsappNumber', 'contactNumber', 'companyName', 'licenseNumber', 'bio',
       'profilePictureUrl', 'facebookUrl', 'linkedinUrl', 'officeAddress',
       'instagramUrl', 'websiteUrl', 'specialization', 'publicEmail'
     ];
