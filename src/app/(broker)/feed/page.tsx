@@ -69,9 +69,9 @@ export default async function FeedPage() {
         {/* Left Sidebar (Profile & Navigation) */}
         <div className="hidden lg:block sticky top-24">
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-6">
-            <div className="h-16 bg-gradient-to-r from-indigo-500 to-purple-600"></div>
+            <div className="h-16 bg-gradient-to-r from-teal-500 to-cyan-600"></div>
             <div className="px-6 pb-6 relative">
-              <div className="w-16 h-16 rounded-2xl bg-white border-4 border-white shadow-md flex items-center justify-center text-indigo-600 -mt-8 mb-3 overflow-hidden">
+              <div className="w-16 h-16 rounded-2xl bg-white border-4 border-white shadow-md flex items-center justify-center text-teal-600 -mt-8 mb-3 overflow-hidden">
                  {currentUser?.broker?.profilePictureUrl ? (
                    <img src={currentUser.broker.profilePictureUrl} alt="Profile" className="w-full h-full object-cover" />
                  ) : (
@@ -123,7 +123,7 @@ export default async function FeedPage() {
             <Link href="/properties?add=true" className="flex-1 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-500 px-4 py-2.5 rounded-full text-sm text-left transition-colors cursor-pointer">
               Share a new listing with the network...
             </Link>
-            <Link href="/properties?add=true" className="shrink-0 bg-indigo-50 text-indigo-600 p-2.5 rounded-full hover:bg-indigo-100 transition-colors cursor-pointer shadow-sm">
+            <Link href="/properties?add=true" className="shrink-0 bg-teal-50 text-teal-600 p-2.5 rounded-full hover:bg-teal-100 transition-colors cursor-pointer shadow-sm">
               <Plus className="w-5 h-5" />
             </Link>
           </div>

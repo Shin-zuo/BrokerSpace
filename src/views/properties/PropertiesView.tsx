@@ -37,6 +37,8 @@ interface Property {
   sizeSqm?: number | null;
   latitude?: number | null;
   longitude?: number | null;
+  visibility?: string;
+  locationVisibility?: string;
   images?: PropertyImage[];
 }
 
@@ -54,11 +56,22 @@ const initialForm = {
   postalCode: "",
   latitude: null as number | null,
   longitude: null as number | null,
+  visibility: "PUBLIC",
+  locationVisibility: "PUBLIC",
 };
 
 export default function PropertiesView() {
   const [properties, setProperties] = useState<Property[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+    }, 300);
+    return () => clearTimeout(handler);
+  }, [searchQuery]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<'CREATE' | 'EDIT' | 'VIEW' | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -117,6 +130,10 @@ export default function PropertiesView() {
           city: property.city,
           addressLine1: property.addressLine1,
           postalCode: property.postalCode || "",
+          visibility: property.visibility || "PUBLIC",
+          locationVisibility: property.locationVisibility || "PUBLIC",
+          latitude: property.latitude || null,
+          longitude: property.longitude || null,
         });
         // Re-hydrate location codes
         const r = regions.find((x: any) => x.name === property.region || x.altName === property.region || formatRegionName(x) === property.region);
@@ -169,7 +186,9 @@ export default function PropertiesView() {
     try {
       const submitData = new FormData();
       Object.entries(formData).forEach(([key, value]) => {
-        submitData.append(key, value);
+        if (value !== null && value !== undefined) {
+          submitData.append(key, value.toString());
+        }
       });
       
       selectedFiles.forEach(file => {
@@ -280,6 +299,12 @@ export default function PropertiesView() {
     })
     .map((c: any) => ({ label: c.name, value: c.name, code: c.name }));
 
+  const filteredProperties = properties.filter((p) => 
+    p.title.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) || 
+    p.propertyType.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
+    (p.city && p.city.toLowerCase().includes(debouncedSearchQuery.toLowerCase()))
+  );
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
@@ -288,13 +313,22 @@ export default function PropertiesView() {
           <h1 className="text-2xl font-bold text-slate-900">My Properties</h1>
           <p className="text-slate-500">Manage and track all your real estate listings</p>
         </div>
-        <button
-          onClick={() => handleOpenModal('CREATE')}
-          className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl font-medium transition-colors cursor-pointer shadow-sm shadow-indigo-600/20"
-        >
-          <Plus className="w-5 h-5" />
-          Add Property
-        </button>
+        <div className="flex items-center gap-4 w-full sm:w-auto">
+          <input
+            type="text"
+            placeholder="Search listings..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full sm:w-64 px-4 py-2 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all text-sm"
+          />
+          <button
+            onClick={() => handleOpenModal('CREATE')}
+            className="flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white px-5 py-2.5 rounded-xl font-medium transition-colors cursor-pointer shadow-sm shadow-teal-600/20 shrink-0"
+          >
+            <Plus className="w-5 h-5" />
+            Add Property
+          </button>
+        </div>
       </div>
 
       {/* Data Table */}
@@ -316,17 +350,17 @@ export default function PropertiesView() {
                 <tr>
                   <td colSpan={6} className="py-8 text-center text-slate-500">Loading properties...</td>
                 </tr>
-              ) : properties.length === 0 ? (
+              ) : filteredProperties.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="py-8 text-center text-slate-500">No properties found. Add one above!</td>
+                  <td colSpan={6} className="py-8 text-center text-slate-500">No properties found.</td>
                 </tr>
               ) : (
-                properties.map((property) => (
+                filteredProperties.map((property) => (
                   <motion.tr 
                     variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}
                     key={property.id} 
                     onClick={() => handleOpenModal('VIEW', property)}
-                    className="border-b border-slate-100/50 hover:bg-indigo-50/30 transition-colors cursor-pointer"
+                    className="border-b border-slate-100/50 hover:bg-teal-50/30 transition-colors cursor-pointer"
                   >
                     <td className="py-2 px-4 text-sm font-medium text-slate-900 flex items-center gap-3">
                       {property.images && property.images.length > 0 ? (
@@ -493,6 +527,8 @@ export default function PropertiesView() {
                   <option value="Townhouse">Townhouse</option>
                   <option value="Land">Land</option>
                   <option value="Commercial">Commercial</option>
+                  <option value="Apartment">Apartment</option>
+                  <option value="Resort">Resort</option>
                 </select>
               </div>
 
@@ -500,6 +536,25 @@ export default function PropertiesView() {
                 <label className="text-sm font-medium text-slate-700">Size (sqm)</label>
                 <input type="number" step="any" name="sizeSqm" value={formData.sizeSqm} onChange={handleChange} className="w-full px-3 py-2 border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors text-sm text-slate-900" placeholder="e.g. 150" />
               </div>
+
+              <div className="flex flex-col gap-1.5">
+                <label className="text-sm font-medium text-slate-700">Property Visibility</label>
+                <select name="visibility" value={formData.visibility} onChange={handleChange} className="w-full px-3 py-2 border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors text-sm text-slate-900 bg-white">
+                  <option value="PUBLIC">Public</option>
+                  <option value="FRIENDS">Friends Only</option>
+                  <option value="PRIVATE">Private</option>
+                </select>
+              </div>
+
+              {(formData.addressLine1 || formData.city || formData.region) && (
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-sm font-medium text-slate-700">Location Visibility</label>
+                  <select name="locationVisibility" value={formData.locationVisibility} onChange={handleChange} className="w-full px-3 py-2 border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors text-sm text-slate-900 bg-white">
+                    <option value="PUBLIC">Public</option>
+                    <option value="PRIVATE">Private (Hide Exact Location)</option>
+                  </select>
+                </div>
+              )}
 
               {/* Photos Upload */}
               <div className="flex flex-col gap-1.5 md:col-span-2 mt-2">

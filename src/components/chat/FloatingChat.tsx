@@ -56,11 +56,11 @@ function ChatWindow({ conversationId, currentUserId }: { conversationId: string,
     <div className={`w-80 bg-white rounded-t-xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden transition-all duration-300 ${isMinimized ? 'h-12' : 'h-96'}`}>
       {/* Header */}
       <div 
-        className="h-12 bg-indigo-600 text-white px-4 py-2 flex items-center justify-between cursor-pointer"
+        className="h-12 bg-teal-600 text-white px-4 py-2 flex items-center justify-between cursor-pointer"
         onClick={() => setIsMinimized(!isMinimized)}
       >
         <div className="flex items-center gap-2 font-medium overflow-hidden">
-          <div className="w-8 h-8 rounded-full bg-indigo-500 overflow-hidden flex items-center justify-center text-sm shrink-0">
+          <div className="w-8 h-8 rounded-full bg-teal-500 overflow-hidden flex items-center justify-center text-sm shrink-0">
             {otherParticipant?.broker?.profilePictureUrl ? (
               <img src={otherParticipant.broker.profilePictureUrl} alt="" className="w-full h-full object-cover" />
             ) : (
@@ -69,7 +69,7 @@ function ChatWindow({ conversationId, currentUserId }: { conversationId: string,
           </div>
           <span className="truncate text-sm">{otherParticipant?.broker?.name || 'Loading...'}</span>
         </div>
-        <div className="flex items-center gap-1 shrink-0 text-indigo-200">
+        <div className="flex items-center gap-1 shrink-0 text-teal-200">
           <button className="hover:text-white p-1 rounded-md transition-colors">
             {isMinimized ? <Maximize2 className="w-4 h-4" /> : <Minus className="w-4 h-4" />}
           </button>
@@ -99,7 +99,7 @@ function ChatWindow({ conversationId, currentUserId }: { conversationId: string,
                 const isMe = msg.senderId === currentUserId;
                 return (
                   <div key={msg.id} className={`flex flex-col max-w-[85%] ${isMe ? 'self-end' : 'self-start'}`}>
-                    <div className={`px-3 py-2 rounded-2xl text-sm ${isMe ? 'bg-indigo-600 text-white rounded-tr-sm' : 'bg-white border border-slate-200 text-slate-800 rounded-tl-sm shadow-sm'}`}>
+                    <div className={`px-3 py-2 rounded-2xl text-sm ${isMe ? 'bg-teal-600 text-white rounded-tr-sm' : 'bg-white border border-slate-200 text-slate-800 rounded-tl-sm shadow-sm'}`}>
                       {msg.content}
                     </div>
                     <span className={`text-[10px] text-slate-400 mt-1 ${isMe ? 'self-end' : 'self-start'}`}>
@@ -119,12 +119,12 @@ function ChatWindow({ conversationId, currentUserId }: { conversationId: string,
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder="Type a message..."
-              className="flex-1 bg-slate-100 border-transparent focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-full px-4 py-2 text-sm transition-all outline-none"
+              className="flex-1 bg-slate-100 border-transparent focus:bg-white focus:border-teal-500 focus:ring-1 focus:ring-teal-500 rounded-full px-4 py-2 text-sm transition-all outline-none"
             />
             <button 
               type="submit" 
               disabled={!content.trim() || isSending}
-              className="w-9 h-9 rounded-full bg-indigo-600 text-white flex items-center justify-center shrink-0 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-indigo-700 transition-colors"
+              className="w-9 h-9 rounded-full bg-teal-600 text-white flex items-center justify-center shrink-0 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-teal-700 transition-colors"
             >
               {isSending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4 ml-0.5" />}
             </button>

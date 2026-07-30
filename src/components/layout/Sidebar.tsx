@@ -21,9 +21,7 @@ export default function Sidebar() {
     <div className="flex flex-col w-64 glass-panel border-r border-white h-screen fixed top-0 left-0 z-20">
       <div className="p-6">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold text-lg shadow-md shadow-indigo-500/20">
-            B
-          </div>
+          <img src="/brokerSpace.png" alt="BrokerSpace Logo" className="h-15 w-auto object-contain" />
           <h2 className="text-xl font-bold text-slate-900 tracking-tight">BrokerSpace</h2>
         </div>
       </div>
@@ -37,19 +35,19 @@ export default function Sidebar() {
               key={item.name}
               href={item.href}
               className={`relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors duration-200 cursor-pointer group ${
-                isActive ? "text-indigo-700" : "text-slate-600 hover:text-slate-900"
+                isActive ? "text-teal-700" : "text-slate-600 hover:text-slate-900"
               }`}
             >
               {isActive && (
                 <motion.div 
                   layoutId="sidebar-active"
-                  className="absolute inset-0 bg-indigo-50 rounded-xl"
+                  className="absolute inset-0 bg-teal-50 rounded-xl"
                   initial={false}
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
                 />
               )}
               <div className="relative flex items-center gap-3 w-full">
-                <Icon className={`w-5 h-5 ${isActive ? "text-indigo-600" : "text-slate-400 group-hover:text-slate-600 transition-colors"}`} />
+                <Icon className={`w-5 h-5 ${isActive ? "text-teal-600" : "text-slate-400 group-hover:text-slate-600 transition-colors"}`} />
                 {item.name}
               </div>
             </Link>

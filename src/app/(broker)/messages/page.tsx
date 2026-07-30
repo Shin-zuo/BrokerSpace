@@ -74,7 +74,7 @@ export default function MessagesPage() {
               <input 
                 type="text" 
                 placeholder="Search messages..." 
-                className="w-full bg-slate-100 pl-9 pr-4 py-2 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow"
+                className="w-full bg-slate-100 pl-9 pr-4 py-2 rounded-xl text-sm outline-none focus:ring-2 focus:ring-teal-500 transition-shadow"
               />
             </div>
           </div>
@@ -100,9 +100,9 @@ export default function MessagesPage() {
                   <button 
                     key={conv.id}
                     onClick={() => setActiveConversationId(conv.id)}
-                    className={`w-full p-4 flex gap-3 text-left transition-colors border-b border-slate-100 last:border-0 hover:bg-slate-100 ${isActive ? 'bg-indigo-50 hover:bg-indigo-50' : 'bg-white'}`}
+                    className={`w-full p-4 flex gap-3 text-left transition-colors border-b border-slate-100 last:border-0 hover:bg-slate-100 ${isActive ? 'bg-teal-50 hover:bg-teal-50' : 'bg-white'}`}
                   >
-                    <div className="w-12 h-12 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center shrink-0 overflow-hidden relative">
+                    <div className="w-12 h-12 rounded-full bg-teal-100 text-teal-600 flex items-center justify-center shrink-0 overflow-hidden relative">
                       {partner?.broker?.profilePictureUrl ? (
                         <img src={partner.broker.profilePictureUrl} alt="" className="w-full h-full object-cover" />
                       ) : (
@@ -111,7 +111,7 @@ export default function MessagesPage() {
                     </div>
                     <div className="flex-1 min-w-0 flex flex-col justify-center">
                       <div className="flex justify-between items-baseline mb-1">
-                        <h3 className={`truncate font-semibold ${isUnread && !isActive ? 'text-indigo-900' : 'text-slate-900'}`}>
+                        <h3 className={`truncate font-semibold ${isUnread && !isActive ? 'text-teal-900' : 'text-slate-900'}`}>
                           {partner?.broker?.name}
                         </h3>
                         {lastMsg && (
@@ -120,11 +120,11 @@ export default function MessagesPage() {
                           </span>
                         )}
                       </div>
-                      <p className={`truncate text-sm ${isUnread && !isActive ? 'font-bold text-indigo-600' : 'text-slate-500'}`}>
+                      <p className={`truncate text-sm ${isUnread && !isActive ? 'font-bold text-teal-600' : 'text-slate-500'}`}>
                         {lastMsg ? (lastMsg.senderId === currentUserId ? `You: ${lastMsg.content}` : lastMsg.content) : 'Start a conversation'}
                       </p>
                     </div>
-                    {isUnread && !isActive && <div className="w-2.5 h-2.5 rounded-full bg-indigo-600 self-center"></div>}
+                    {isUnread && !isActive && <div className="w-2.5 h-2.5 rounded-full bg-teal-600 self-center"></div>}
                   </button>
                 );
               })
@@ -138,7 +138,7 @@ export default function MessagesPage() {
             <>
               {/* Chat Header */}
               <div className="h-16 px-6 border-b border-slate-200 flex items-center gap-4 bg-white shrink-0">
-                <div className="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center overflow-hidden">
+                <div className="w-10 h-10 rounded-full bg-teal-100 text-teal-600 flex items-center justify-center overflow-hidden">
                   {otherParticipant.broker?.profilePictureUrl ? (
                     <img src={otherParticipant.broker.profilePictureUrl} alt="" className="w-full h-full object-cover" />
                   ) : (
@@ -169,7 +169,7 @@ export default function MessagesPage() {
                     const isMe = msg.senderId === currentUserId;
                     return (
                       <div key={msg.id} className={`flex flex-col max-w-[70%] ${isMe ? 'self-end' : 'self-start'}`}>
-                        <div className={`px-4 py-2.5 rounded-2xl text-sm ${isMe ? 'bg-indigo-600 text-white rounded-tr-sm shadow-sm' : 'bg-white border border-slate-200 text-slate-800 rounded-tl-sm shadow-sm'}`}>
+                        <div className={`px-4 py-2.5 rounded-2xl text-sm ${isMe ? 'bg-teal-600 text-white rounded-tr-sm shadow-sm' : 'bg-white border border-slate-200 text-slate-800 rounded-tl-sm shadow-sm'}`}>
                           {msg.content}
                         </div>
                         <span className={`text-[10px] text-slate-400 mt-1 ${isMe ? 'self-end pr-1' : 'self-start pl-1'}`}>
@@ -190,12 +190,12 @@ export default function MessagesPage() {
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                     placeholder="Write a message..."
-                    className="flex-1 bg-slate-100 border border-transparent focus:bg-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl px-4 py-3 text-sm transition-all outline-none"
+                    className="flex-1 bg-slate-100 border border-transparent focus:bg-white focus:border-teal-500 focus:ring-1 focus:ring-teal-500 rounded-xl px-4 py-3 text-sm transition-all outline-none"
                   />
                   <button 
                     type="submit" 
                     disabled={!content.trim() || isSending}
-                    className="w-12 h-12 rounded-xl bg-indigo-600 text-white flex items-center justify-center shrink-0 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-indigo-700 transition-colors shadow-sm"
+                    className="w-12 h-12 rounded-xl bg-teal-600 text-white flex items-center justify-center shrink-0 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-teal-700 transition-colors shadow-sm"
                   >
                     {isSending ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5 ml-1" />}
                   </button>

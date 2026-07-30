@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, MessageSquare, Search, Settings, LogOut, User, Bell } from 'lucide-react';
+import { Home, MessageSquare, Search, Settings, LogOut, User, Bell, X } from 'lucide-react';
 import NavbarSearch from './NavbarSearch';
 import { motion, AnimatePresence } from 'framer-motion';
 import { logoutAction } from '@/src/app/actions/auth';
@@ -74,9 +74,7 @@ export default function Navbar({ user }: { user?: any }) {
     <nav className="fixed top-0 left-0 right-0 h-16 bg-white/80 border-b border-gray-200 z-50 flex items-center justify-between px-6 backdrop-blur-md">
       <div className="flex items-center gap-8">
         <Link href="/feed" className="flex items-center gap-2 cursor-pointer">
-          <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold text-lg shadow-md">
-            B
-          </div>
+          <img src="/brokerSpace.png" alt="BrokerSpace Logo" className="h-12 w-auto object-contain" />
           <span className="text-xl font-bold text-slate-900 tracking-tight hidden sm:block">BrokerSpace</span>
         </Link>
         
@@ -84,7 +82,7 @@ export default function Navbar({ user }: { user?: any }) {
       </div>
 
       <div className="flex items-center gap-2">
-        <Link href="/feed" className={`relative flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer ${pathname.startsWith('/feed') ? 'text-indigo-600 bg-indigo-50/50' : 'text-slate-600 hover:bg-slate-100'}`}>
+        <Link href="/feed" className={`relative flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer ${pathname.startsWith('/feed') ? 'text-teal-600 bg-teal-50/50' : 'text-slate-600 hover:bg-slate-100'}`}>
           <Home className="w-5 h-5" />
           <span className="hidden sm:block">Feed</span>
         </Link>
@@ -97,7 +95,7 @@ export default function Navbar({ user }: { user?: any }) {
               setIsMessagesOpen(false);
               if (!isNotificationsOpen) handleMarkNotifRead();
             }} 
-            className={`relative flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer border-none outline-none ${isNotificationsOpen ? 'text-indigo-600 bg-indigo-50/50' : 'text-slate-600 hover:bg-slate-100'}`}
+            className={`relative flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer border-none outline-none ${isNotificationsOpen ? 'text-teal-600 bg-teal-50/50' : 'text-slate-600 hover:bg-slate-100'}`}
           >
             <div className="relative">
               <Bell className="w-5 h-5" />
@@ -134,28 +132,41 @@ export default function Navbar({ user }: { user?: any }) {
                       const wrapperProps = isFriendRequest ? { href: '/network#requests', onClick: () => setIsNotificationsOpen(false) } : {};
 
                       return (
-                        <ContentWrapper 
-                          key={notif.id} 
-                          {...wrapperProps}
-                          className={`p-3 hover:bg-slate-50 rounded-lg flex gap-3 text-sm transition-colors border-b border-slate-100 last:border-0 ${isFriendRequest ? 'cursor-pointer' : ''}`}
-                        >
-                          <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center shrink-0 overflow-hidden">
-                             {notif.actor?.broker?.profilePictureUrl ? (
-                               <img src={notif.actor.broker.profilePictureUrl} alt="" className="w-full h-full object-cover" />
-                             ) : (
-                               <User className="w-4 h-4" />
-                             )}
-                          </div>
-                          <div>
-                            <p className="text-slate-700">
-                              <span className="font-semibold text-slate-900">{notif.actor?.broker?.name}</span>
-                              {notif.type === 'LIKE' ? ' liked your property listing' : notif.type === 'FRIEND_REQUEST' ? ' sent you a friend request' : ' interacted with you'}
-                            </p>
-                            <p className="text-xs text-slate-400 mt-1">
-                              {new Date(notif.createdAt).toLocaleDateString()}
-                            </p>
-                          </div>
-                        </ContentWrapper>
+                        <div key={notif.id} className="relative group">
+                          <ContentWrapper 
+                            {...wrapperProps}
+                            className={`p-3 hover:bg-slate-50 rounded-lg flex gap-3 text-sm transition-colors border-b border-slate-100 last:border-0 ${isFriendRequest ? 'cursor-pointer' : ''}`}
+                          >
+                            <div className="w-8 h-8 rounded-full bg-teal-100 text-teal-600 flex items-center justify-center shrink-0 overflow-hidden">
+                               {notif.actor?.broker?.profilePictureUrl ? (
+                                 <img src={notif.actor.broker.profilePictureUrl} alt="" className="w-full h-full object-cover" />
+                               ) : (
+                                 <User className="w-4 h-4" />
+                               )}
+                            </div>
+                            <div className="pr-6">
+                              <p className="text-slate-700">
+                                <span className="font-semibold text-slate-900">{notif.actor?.broker?.name}</span>
+                                {notif.type === 'LIKE' ? ' liked your property listing' : notif.type === 'FRIEND_REQUEST' ? ' sent you a friend request' : ' interacted with you'}
+                              </p>
+                              <p className="text-xs text-slate-400 mt-1">
+                                {new Date(notif.createdAt).toLocaleDateString()}
+                              </p>
+                            </div>
+                          </ContentWrapper>
+                          <button
+                            onClick={async (e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              await fetch(`/api/notifications/${notif.id}`, { method: 'DELETE' });
+                              mutateNotif();
+                            }}
+                            className="absolute top-4 right-2 text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                            title="Delete notification"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
                       )
                     })
                   )}
@@ -172,7 +183,7 @@ export default function Navbar({ user }: { user?: any }) {
               setIsMessagesOpen(!isMessagesOpen);
               setIsNotificationsOpen(false);
             }} 
-            className={`relative flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer border-none outline-none ${isMessagesOpen || pathname.startsWith('/messages') ? 'text-indigo-600 bg-indigo-50/50' : 'text-slate-600 hover:bg-slate-100'}`}
+            className={`relative flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer border-none outline-none ${isMessagesOpen || pathname.startsWith('/messages') ? 'text-teal-600 bg-teal-50/50' : 'text-slate-600 hover:bg-slate-100'}`}
           >
             <div className="relative">
               <MessageSquare className="w-5 h-5" />
@@ -196,7 +207,7 @@ export default function Navbar({ user }: { user?: any }) {
               >
                 <div className="px-4 py-3 border-b border-slate-100 flex items-center justify-between bg-slate-50">
                   <h3 className="font-bold text-slate-900">Recent Messages</h3>
-                  <Link href="/messages" className="text-xs text-indigo-600 hover:text-indigo-700 font-medium" onClick={() => setIsMessagesOpen(false)}>
+                  <Link href="/messages" className="text-xs text-teal-600 hover:text-teal-700 font-medium" onClick={() => setIsMessagesOpen(false)}>
                     View all
                   </Link>
                 </div>
@@ -220,7 +231,7 @@ export default function Navbar({ user }: { user?: any }) {
                           }}
                           className="p-3 hover:bg-slate-50 rounded-lg flex gap-3 text-sm transition-colors cursor-pointer border-b border-slate-100 last:border-0 items-center"
                         >
-                          <div className="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center shrink-0 overflow-hidden relative">
+                          <div className="w-10 h-10 rounded-full bg-teal-100 text-teal-600 flex items-center justify-center shrink-0 overflow-hidden relative">
                              {otherParticipant?.broker?.profilePictureUrl ? (
                                <img src={otherParticipant.broker.profilePictureUrl} alt="" className="w-full h-full object-cover" />
                              ) : (
@@ -231,11 +242,11 @@ export default function Navbar({ user }: { user?: any }) {
                             <p className="font-semibold text-slate-900 truncate">
                               {otherParticipant?.broker?.name}
                             </p>
-                            <p className={`truncate text-xs mt-0.5 ${isUnread ? 'font-bold text-indigo-600' : 'text-slate-500'}`}>
+                            <p className={`truncate text-xs mt-0.5 ${isUnread ? 'font-bold text-teal-600' : 'text-slate-500'}`}>
                               {lastMsg ? lastMsg.content : 'New conversation'}
                             </p>
                           </div>
-                          {isUnread && <div className="w-2.5 h-2.5 rounded-full bg-indigo-600 shrink-0"></div>}
+                          {isUnread && <div className="w-2.5 h-2.5 rounded-full bg-teal-600 shrink-0"></div>}
                         </div>
                       )
                     })
@@ -254,7 +265,7 @@ export default function Navbar({ user }: { user?: any }) {
               setIsMessagesOpen(false);
               setIsNotificationsOpen(false);
             }}
-            className="flex items-center justify-center w-9 h-9 rounded-full bg-indigo-100 text-indigo-700 hover:ring-2 ring-indigo-500 ring-offset-2 transition-all cursor-pointer border-none outline-none overflow-hidden"
+            className="flex items-center justify-center w-9 h-9 rounded-full bg-teal-100 text-teal-700 hover:ring-2 ring-teal-500 ring-offset-2 transition-all cursor-pointer border-none outline-none overflow-hidden"
           >
             {user?.broker?.profilePictureUrl ? (
               <img src={user.broker.profilePictureUrl} alt="Profile" className="w-full h-full object-cover" />

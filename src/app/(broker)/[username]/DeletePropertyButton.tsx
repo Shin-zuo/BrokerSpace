@@ -14,7 +14,7 @@ export default function DeletePropertyButton({ propertyId, propertyTitle }: { pr
       text: `You are about to delete "${propertyTitle}". This action cannot be undone.`,
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#4f46e5', // indigo-600
+      confirmButtonColor: '#4f46e5', // teal-600
       cancelButtonColor: '#ef4444', // red-500
       confirmButtonText: 'Yes, delete it!'
     });

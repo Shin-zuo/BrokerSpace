@@ -29,7 +29,7 @@ export default function PropertyGallery({ images, title }: { images: PropertyIma
           {sidebarImages.map((img, idx) => (
             <div 
               key={img.id || idx} 
-              className="flex-1 rounded-2xl overflow-hidden shadow-sm min-h-0 cursor-pointer group border-2 border-transparent hover:border-indigo-400 transition-colors"
+              className="flex-1 rounded-2xl overflow-hidden shadow-sm min-h-0 cursor-pointer group border-2 border-transparent hover:border-teal-400 transition-colors"
               onClick={() => setActiveImage(img.url)}
             >
               <img 

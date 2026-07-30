@@ -24,7 +24,7 @@ export default function NavbarSearch() {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="Search properties, brokers..." 
-        className="block w-full pl-10 pr-3 py-2 border border-slate-200 rounded-full bg-slate-50 text-sm placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+        className="block w-full pl-10 pr-3 py-2 border border-slate-200 rounded-full bg-slate-50 text-sm placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
       />
     </form>
   );

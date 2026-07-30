@@ -86,7 +86,7 @@ export default async function SearchPage(props: { searchParams: Promise<{ q?: st
         {/* Properties Results */}
         <div className="lg:col-span-2 space-y-6">
           <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-            <Building2 className="w-5 h-5 text-indigo-500" />
+            <Building2 className="w-5 h-5 text-teal-500" />
             Properties
           </h2>
           
@@ -106,7 +106,7 @@ export default async function SearchPage(props: { searchParams: Promise<{ q?: st
         {/* Brokers Results */}
         <div className="lg:col-span-1 space-y-6">
           <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-            <User className="w-5 h-5 text-indigo-500" />
+            <User className="w-5 h-5 text-teal-500" />
             Brokers
           </h2>
 
@@ -117,8 +117,8 @@ export default async function SearchPage(props: { searchParams: Promise<{ q?: st
           ) : (
             <div className="space-y-4">
               {brokers.map((user: any) => (
-                <Link key={user.id} href={`/${user.username}`} className="flex items-center gap-4 bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:border-indigo-300 transition-colors group cursor-pointer">
-                  <div className="w-12 h-12 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center shrink-0 overflow-hidden">
+                <Link key={user.id} href={`/${user.username}`} className="flex items-center gap-4 bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:border-teal-300 transition-colors group cursor-pointer">
+                  <div className="w-12 h-12 rounded-full bg-teal-100 text-teal-600 flex items-center justify-center shrink-0 overflow-hidden">
                     {user.broker?.profilePictureUrl ? (
                       <img src={user.broker.profilePictureUrl} alt="" className="w-full h-full object-cover" />
                     ) : (
@@ -126,7 +126,7 @@ export default async function SearchPage(props: { searchParams: Promise<{ q?: st
                     )}
                   </div>
                   <div>
-                    <h3 className="font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">{user.broker?.name}</h3>
+                    <h3 className="font-bold text-slate-900 group-hover:text-teal-600 transition-colors">{user.broker?.name}</h3>
                     <p className="text-sm text-slate-500">@{user.username}</p>
                   </div>
                 </Link>

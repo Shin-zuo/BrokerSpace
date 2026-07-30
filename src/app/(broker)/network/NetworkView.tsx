@@ -72,9 +72,9 @@ export default function NetworkView({ currentUserId, initialConnections, suggest
       const el = document.getElementById('pending-requests');
       if (el) {
         el.scrollIntoView({ behavior: 'smooth' });
-        el.classList.add('ring-2', 'ring-indigo-500', 'ring-offset-2', 'shadow-lg');
+        el.classList.add('ring-2', 'ring-teal-500', 'ring-offset-2', 'shadow-lg');
         setTimeout(() => {
-          el.classList.remove('ring-2', 'ring-indigo-500', 'ring-offset-2', 'shadow-lg');
+          el.classList.remove('ring-2', 'ring-teal-500', 'ring-offset-2', 'shadow-lg');
         }, 3000);
       }
     }
@@ -89,14 +89,14 @@ export default function NetworkView({ currentUserId, initialConnections, suggest
         {pendingIncoming.length > 0 && (
           <div id="pending-requests" className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 transition-all duration-1000">
             <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
-              <Network className="w-5 h-5 text-indigo-500" />
+              <Network className="w-5 h-5 text-teal-500" />
               Pending Requests ({pendingIncoming.length})
             </h2>
             <div className="space-y-4">
               {pendingIncoming.map((conn: any) => (
                 <div key={conn.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-100">
                   <div className="flex items-center gap-4">
-                    <Link href={`/${conn.requester.username}`} className="w-12 h-12 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center shrink-0 overflow-hidden cursor-pointer hover:ring-2 hover:ring-indigo-300 transition-all">
+                    <Link href={`/${conn.requester.username}`} className="w-12 h-12 rounded-full bg-teal-100 text-teal-600 flex items-center justify-center shrink-0 overflow-hidden cursor-pointer hover:ring-2 hover:ring-teal-300 transition-all">
                       {conn.requester.broker?.profilePictureUrl ? (
                         <img src={conn.requester.broker.profilePictureUrl} alt="" className="w-full h-full object-cover" />
                       ) : (
@@ -104,7 +104,7 @@ export default function NetworkView({ currentUserId, initialConnections, suggest
                       )}
                     </Link>
                     <div>
-                      <Link href={`/${conn.requester.username}`} className="font-bold text-slate-900 hover:text-indigo-600 transition-colors">
+                      <Link href={`/${conn.requester.username}`} className="font-bold text-slate-900 hover:text-teal-600 transition-colors">
                         {conn.requester.broker?.name}
                       </Link>
                       <p className="text-sm text-slate-500">{conn.requester.broker?.companyName || 'Independent Broker'}</p>
@@ -114,7 +114,7 @@ export default function NetworkView({ currentUserId, initialConnections, suggest
                     <button 
                       onClick={() => handleUpdateConnection(conn.id, 'ACCEPTED')}
                       disabled={isUpdating}
-                      className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-1 text-sm disabled:opacity-50 cursor-pointer"
+                      className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-1 text-sm disabled:opacity-50 cursor-pointer"
                     >
                       <Check className="w-4 h-4" /> Accept
                     </button>
@@ -147,14 +147,14 @@ export default function NetworkView({ currentUserId, initialConnections, suggest
                 const partner = conn.requesterId === currentUserId ? conn.receiver : conn.requester;
                 return (
                   <div key={conn.id} className="flex flex-col p-4 bg-slate-50 rounded-xl border border-slate-100 items-center text-center group">
-                    <Link href={`/${partner.username}`} className="w-16 h-16 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center mb-3 overflow-hidden shadow-sm group-hover:ring-2 ring-indigo-300 transition-all cursor-pointer">
+                    <Link href={`/${partner.username}`} className="w-16 h-16 rounded-full bg-teal-100 text-teal-600 flex items-center justify-center mb-3 overflow-hidden shadow-sm group-hover:ring-2 ring-teal-300 transition-all cursor-pointer">
                       {partner.broker?.profilePictureUrl ? (
                         <img src={partner.broker.profilePictureUrl} alt="" className="w-full h-full object-cover" />
                       ) : (
                         <User className="w-8 h-8" />
                       )}
                     </Link>
-                    <Link href={`/${partner.username}`} className="font-bold text-slate-900 hover:text-indigo-600 transition-colors">
+                    <Link href={`/${partner.username}`} className="font-bold text-slate-900 hover:text-teal-600 transition-colors">
                       {partner.broker?.name}
                     </Link>
                     <p className="text-xs text-slate-500 mb-4">{partner.broker?.companyName || 'Independent Broker'}</p>
@@ -183,7 +183,7 @@ export default function NetworkView({ currentUserId, initialConnections, suggest
               return !pendingOutgoing.some((p: any) => p.receiverId === s.id);
             }).map((suggestion: any) => (
               <div key={suggestion.id} className="flex items-center gap-3">
-                <Link href={`/${suggestion.username}`} className="w-10 h-10 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center shrink-0 overflow-hidden cursor-pointer hover:ring-2 hover:ring-indigo-300 transition-all">
+                <Link href={`/${suggestion.username}`} className="w-10 h-10 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center shrink-0 overflow-hidden cursor-pointer hover:ring-2 hover:ring-teal-300 transition-all">
                   {suggestion.broker?.profilePictureUrl ? (
                     <img src={suggestion.broker.profilePictureUrl} alt="" className="w-full h-full object-cover" />
                   ) : (
@@ -191,7 +191,7 @@ export default function NetworkView({ currentUserId, initialConnections, suggest
                   )}
                 </Link>
                 <div className="flex-1 min-w-0">
-                  <Link href={`/${suggestion.username}`} className="font-bold text-sm text-slate-900 truncate hover:text-indigo-600 transition-colors cursor-pointer block">
+                  <Link href={`/${suggestion.username}`} className="font-bold text-sm text-slate-900 truncate hover:text-teal-600 transition-colors cursor-pointer block">
                     {suggestion.broker?.name}
                   </Link>
                   <p className="text-xs text-slate-500 truncate">{suggestion.broker?.companyName || 'Broker'}</p>
@@ -199,7 +199,7 @@ export default function NetworkView({ currentUserId, initialConnections, suggest
                 <button 
                   onClick={() => handleConnect(suggestion.id)}
                   disabled={isUpdating}
-                  className="w-8 h-8 rounded-full bg-indigo-50 hover:bg-indigo-100 text-indigo-600 flex items-center justify-center shrink-0 transition-colors disabled:opacity-50 cursor-pointer"
+                  className="w-8 h-8 rounded-full bg-teal-50 hover:bg-teal-100 text-teal-600 flex items-center justify-center shrink-0 transition-colors disabled:opacity-50 cursor-pointer"
                   title="Connect"
                 >
                   <UserPlus className="w-4 h-4" />

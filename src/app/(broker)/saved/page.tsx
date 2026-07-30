@@ -49,8 +49,8 @@ export default async function SavedPropertiesPage() {
         <BackButton />
       </div>
       <div className="flex items-center gap-3 mb-8">
-        <div className="w-12 h-12 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center">
-          <Bookmark className="w-6 h-6 fill-indigo-600" />
+        <div className="w-12 h-12 rounded-xl bg-teal-100 text-teal-600 flex items-center justify-center">
+          <Bookmark className="w-6 h-6 fill-teal-600" />
         </div>
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Saved Listings</h1>

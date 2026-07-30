@@ -29,6 +29,19 @@ enum PropertyType {
   Townhouse
   Land
   Commercial
+  Apartment
+  Resort
+}
+
+enum PropertyVisibility {
+  PUBLIC
+  FRIENDS
+  PRIVATE
+}
+
+enum LocationVisibility {
+  PUBLIC
+  PRIVATE
 }
 
 enum ConnectionStatus {
@@ -115,6 +128,8 @@ model Property {
   country       String
   latitude      Decimal?
   longitude     Decimal?
+  visibility         PropertyVisibility @default(PUBLIC)
+  locationVisibility LocationVisibility @default(PUBLIC) @map("location_visibility")
   images        PropertyImage[]
   
   // Relations for new social features

@@ -30,7 +30,7 @@ export default function SignupPage() {
     <div className="min-h-screen flex items-center justify-center bg-slate-50 relative overflow-hidden">
       {/* Background Decor */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-indigo-100/50 blur-3xl" />
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-teal-100/50 blur-3xl" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-blue-100/50 blur-3xl" />
       </div>
 
@@ -41,9 +41,7 @@ export default function SignupPage() {
         <div className="glass-panel p-8 sm:p-12 shadow-xl shadow-slate-200/50 relative overflow-hidden">
           
           <div className="text-center mb-10">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-indigo-600 text-white shadow-lg shadow-indigo-600/30 mb-6">
-              <Building2 className="w-8 h-8" />
-            </div>
+            <img src="/brokerSpace.png" alt="BrokerSpace Logo" className="h-28 w-auto object-contain mb-6" />
             <h1 className="text-3xl font-bold tracking-tight text-slate-900 mb-2">Create Broker Account</h1>
             <p className="text-slate-500">Join BrokerSpace to manage and showcase your properties.</p>
           </div>
@@ -67,7 +65,7 @@ export default function SignupPage() {
                     type="text"
                     name="name"
                     required
-                    className="w-full pl-11 pr-4 py-3 bg-white/50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                    className="w-full pl-11 pr-4 py-3 bg-white/50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
                     placeholder="John Doe"
                   />
                 </div>
@@ -91,7 +89,7 @@ export default function SignupPage() {
                       setWhatsapp(formatted);
                       if (sameAsWhatsapp) setContact(formatted);
                     }}
-                    className="w-full pl-16 pr-4 py-3 bg-white/50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                    className="w-full pl-16 pr-4 py-3 bg-white/50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
                     placeholder="9000000000"
                   />
                 </div>
@@ -108,7 +106,7 @@ export default function SignupPage() {
                         setSameAsWhatsapp(e.target.checked);
                         if (e.target.checked) setContact(whatsapp);
                       }}
-                      className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                      className="rounded border-slate-300 text-teal-600 focus:ring-teal-500"
                     />
                     Same as WhatsApp
                   </label>
@@ -127,7 +125,7 @@ export default function SignupPage() {
                       const val = e.target.value.replace(/\D/g, '').slice(0, 10);
                       setContact(val ? `+63${val}` : '');
                     }}
-                    className="w-full pl-16 pr-4 py-3 bg-white/50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all disabled:opacity-50 disabled:bg-slate-100"
+                    className="w-full pl-16 pr-4 py-3 bg-white/50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all disabled:opacity-50 disabled:bg-slate-100"
                     placeholder="9000000000"
                   />
                 </div>
@@ -143,7 +141,7 @@ export default function SignupPage() {
                   <input
                     type="text"
                     name="companyName"
-                    className="w-full pl-11 pr-4 py-3 bg-white/50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                    className="w-full pl-11 pr-4 py-3 bg-white/50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
                     placeholder="Real Estate Corp"
                   />
                 </div>
@@ -158,7 +156,7 @@ export default function SignupPage() {
                   <input
                     type="text"
                     name="licenseNumber"
-                    className="w-full pl-11 pr-4 py-3 bg-white/50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                    className="w-full pl-11 pr-4 py-3 bg-white/50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
                     placeholder="PRC License"
                   />
                 </div>
@@ -174,7 +172,7 @@ export default function SignupPage() {
                   <input
                     type="url"
                     name="facebookUrl"
-                    className="w-full pl-11 pr-4 py-3 bg-white/50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                    className="w-full pl-11 pr-4 py-3 bg-white/50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
                     placeholder="https://facebook.com/..."
                   />
                 </div>
@@ -189,7 +187,7 @@ export default function SignupPage() {
                   <input
                     type="url"
                     name="linkedinUrl"
-                    className="w-full pl-11 pr-4 py-3 bg-white/50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                    className="w-full pl-11 pr-4 py-3 bg-white/50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
                     placeholder="https://linkedin.com/..."
                   />
                 </div>
@@ -210,7 +208,7 @@ export default function SignupPage() {
                     type="text"
                     name="username"
                     required
-                    className="w-full pl-11 pr-4 py-3 bg-white/50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                    className="w-full pl-11 pr-4 py-3 bg-white/50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
                     placeholder="johndoe123"
                   />
                 </div>
@@ -226,7 +224,7 @@ export default function SignupPage() {
                     type="email"
                     name="email"
                     required
-                    className="w-full pl-11 pr-4 py-3 bg-white/50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                    className="w-full pl-11 pr-4 py-3 bg-white/50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
                     placeholder="john@example.com"
                   />
                 </div>
@@ -242,7 +240,7 @@ export default function SignupPage() {
                     type="password"
                     name="password"
                     required
-                    className="w-full pl-11 pr-4 py-3 bg-white/50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                    className="w-full pl-11 pr-4 py-3 bg-white/50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
                     placeholder="••••••••"
                   />
                 </div>
@@ -252,7 +250,7 @@ export default function SignupPage() {
             <button
               type="submit"
               disabled={isPending}
-              className="w-full flex items-center justify-center py-3.5 px-4 rounded-xl text-white font-medium bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all disabled:opacity-70 disabled:cursor-not-allowed mt-8"
+              className="w-full flex items-center justify-center py-3.5 px-4 rounded-xl text-white font-medium bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 transition-all disabled:opacity-70 disabled:cursor-not-allowed mt-8"
             >
               {isPending ? "Creating Account..." : "Sign Up"}
             </button>
@@ -260,7 +258,7 @@ export default function SignupPage() {
 
           <p className="mt-8 text-center text-sm text-slate-600">
             Already have an account?{" "}
-            <Link href="/login" className="font-semibold text-indigo-600 hover:text-indigo-500 transition-colors">
+            <Link href="/login" className="font-semibold text-teal-600 hover:text-teal-500 transition-colors">
               Sign in
             </Link>
           </p>

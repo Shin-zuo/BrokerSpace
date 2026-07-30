@@ -110,7 +110,7 @@ export default function LocationPicker({
           </div>
           <input
             type="text"
-            className="block w-full pl-10 pr-24 py-3 bg-white border border-slate-200 rounded-xl text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm"
+            className="block w-full pl-10 pr-24 py-3 bg-white border border-slate-200 rounded-xl text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all shadow-sm"
             placeholder="Search for a city, street, or landmark to pin..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -132,14 +132,14 @@ export default function LocationPicker({
         
         {isGeocoding && (
           <div className="absolute top-4 left-4 z-[400] bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-sm border border-slate-200 flex items-center gap-2 text-xs font-semibold text-slate-600">
-            <Loader2 className="w-3.5 h-3.5 animate-spin text-indigo-500" />
+            <Loader2 className="w-3.5 h-3.5 animate-spin text-teal-500" />
             Resolving address...
           </div>
         )}
 
         {interactive && !isGeocoding && (
           <div className="absolute top-4 left-4 z-[400] bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-sm border border-slate-200 flex items-center gap-2 text-xs font-semibold text-slate-600 pointer-events-none">
-            <MapPin className="w-3.5 h-3.5 text-indigo-500" />
+            <MapPin className="w-3.5 h-3.5 text-teal-500" />
             Drag the pin to set exact location
           </div>
         )}

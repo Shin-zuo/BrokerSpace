@@ -1,9 +1,45 @@
 import { prisma } from "@/src/lib/prisma";
 
 export class PropertyController {
-  static async getAll(brokerId?: string) {
+  static async getAll(brokerId?: string, viewerBrokerId?: string, viewerUserId?: string) {
+    let visibilityFilter: any = { visibility: "PUBLIC" };
+
+    if (viewerUserId && viewerBrokerId) {
+      const connections = await prisma.connection.findMany({
+        where: {
+          status: "ACCEPTED",
+          OR: [{ requesterId: viewerUserId }, { receiverId: viewerUserId }]
+        }
+      });
+      
+      const friendIds = connections.map((c: any) => 
+        c.requesterId === viewerUserId ? c.receiverId : c.requesterId
+      );
+
+      visibilityFilter = {
+        OR: [
+          { visibility: "PUBLIC" },
+          { brokerId: viewerBrokerId },
+          { 
+            visibility: "FRIENDS", 
+            broker: { user: { id: { in: friendIds } } } 
+          }
+        ]
+      };
+    }
+
+    let whereClause: any = visibilityFilter;
+    if (brokerId) {
+      whereClause = {
+        AND: [
+          { brokerId },
+          visibilityFilter
+        ]
+      };
+    }
+
     return await prisma.property.findMany({
-      where: brokerId ? { brokerId } : undefined,
+      where: whereClause,
       include: { images: true },
       orderBy: { createdAt: 'desc' }
     });
@@ -18,6 +54,8 @@ export class PropertyController {
         price: parseFloat(data.price),
         status: data.status || "Available",
         propertyType: data.propertyType || "House",
+        visibility: data.visibility || "PUBLIC",
+        locationVisibility: data.locationVisibility || "PUBLIC",
         sizeSqm: data.sizeSqm ? parseFloat(data.sizeSqm) : null,
         region: data.region || "",
         addressLine1: data.addressLine1 || "",
@@ -81,6 +119,8 @@ export class PropertyController {
         price: parseFloat(data.price),
         status: data.status,
         propertyType: data.propertyType,
+        visibility: data.visibility || "PUBLIC",
+        locationVisibility: data.locationVisibility || "PUBLIC",
         sizeSqm: data.sizeSqm ? parseFloat(data.sizeSqm) : null,
         region: data.region || "",
         addressLine1: data.addressLine1 || "",

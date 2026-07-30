@@ -34,7 +34,7 @@ export default async function SettingsPage() {
         <BackButton />
       </div>
       <div className="flex items-center gap-3">
-        <div className="p-3 bg-indigo-500/10 text-indigo-600 rounded-xl w-fit">
+        <div className="p-3 bg-teal-500/10 text-teal-600 rounded-xl w-fit">
           <Settings className="w-6 h-6" />
         </div>
         <div>

@@ -104,7 +104,7 @@ export default function BrokerHeader() {
             <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
               <h3 className="font-bold text-slate-800">Notifications</h3>
               {unreadCount > 0 && (
-                <span className="text-xs font-semibold text-indigo-600 bg-indigo-50 px-2 py-1 rounded-full">
+                <span className="text-xs font-semibold text-teal-600 bg-teal-50 px-2 py-1 rounded-full">
                   {unreadCount} New
                 </span>
               )}
@@ -120,8 +120,8 @@ export default function BrokerHeader() {
                     className="block p-4 border-b border-slate-50 hover:bg-slate-50 transition-colors group cursor-pointer"
                   >
                     <div className="flex gap-3">
-                      <div className="mt-1 shrink-0 w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center">
-                        <MessageSquare className="w-4 h-4 text-indigo-600" />
+                      <div className="mt-1 shrink-0 w-8 h-8 rounded-full bg-teal-100 flex items-center justify-center">
+                        <MessageSquare className="w-4 h-4 text-teal-600" />
                       </div>
                       <div>
                         <p className="text-sm text-slate-800 line-clamp-2 leading-tight">
@@ -145,7 +145,7 @@ export default function BrokerHeader() {
               <Link 
                 href="/inquiries"
                 onClick={() => setIsOpen(false)}
-                className="text-sm font-semibold text-indigo-600 hover:text-indigo-700 transition-colors"
+                className="text-sm font-semibold text-teal-600 hover:text-teal-700 transition-colors"
               >
                 View all inquiries
               </Link>

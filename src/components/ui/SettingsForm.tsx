@@ -84,7 +84,7 @@ export default function SettingsForm({ initialData }: { initialData: Broker }) {
       
       {/* Profile Header */}
       <div className="glass-card p-6 md:p-8 rounded-3xl flex flex-col md:flex-row items-center gap-8 relative">
-        <div className="absolute -right-12 -top-12 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none -z-10" />
+        <div className="absolute -right-12 -top-12 w-48 h-48 bg-teal-500/10 rounded-full blur-3xl pointer-events-none -z-10" />
         
         <div className="relative group">
           <div className="w-32 h-32 rounded-full border-4 border-white shadow-xl overflow-hidden bg-slate-100 flex items-center justify-center">
@@ -98,7 +98,7 @@ export default function SettingsForm({ initialData }: { initialData: Broker }) {
             type="button"
             onClick={() => fileInputRef.current?.click()}
             disabled={isUploading}
-            className="absolute bottom-0 right-0 p-2.5 bg-indigo-600 text-white rounded-full shadow-lg hover:bg-indigo-700 transition-colors cursor-pointer disabled:opacity-50"
+            className="absolute bottom-0 right-0 p-2.5 bg-teal-600 text-white rounded-full shadow-lg hover:bg-teal-700 transition-colors cursor-pointer disabled:opacity-50"
             title="Upload Profile Picture"
             aria-label="Upload Profile Picture"
           >
@@ -123,7 +123,7 @@ export default function SettingsForm({ initialData }: { initialData: Broker }) {
               required
               value={formData.name || ''}
               onChange={(e) => setFormData({...formData, name: e.target.value})}
-              className="w-full max-w-md px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all font-bold text-xl"
+              className="w-full max-w-md px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all font-bold text-xl"
             />
           </div>
           <div>
@@ -133,7 +133,7 @@ export default function SettingsForm({ initialData }: { initialData: Broker }) {
               value={formData.bio || ''}
               onChange={(e) => setFormData({...formData, bio: e.target.value})}
               rows={3}
-              className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all resize-none text-sm"
+              className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-600 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all resize-none text-sm"
               placeholder="Tell clients about yourself and your experience..."
             />
           </div>
@@ -145,7 +145,7 @@ export default function SettingsForm({ initialData }: { initialData: Broker }) {
         {/* Professional Details */}
         <div className="glass-card p-6 md:p-8 rounded-3xl space-y-6">
           <div className="flex items-center gap-2 border-b border-slate-100 pb-4 mb-6">
-            <Briefcase className="w-5 h-5 text-indigo-500" />
+            <Briefcase className="w-5 h-5 text-teal-500" />
             <h3 className="text-lg font-bold text-slate-900">Professional Details</h3>
           </div>
           
@@ -159,7 +159,7 @@ export default function SettingsForm({ initialData }: { initialData: Broker }) {
                   type="text"
                   value={formData.companyName || ''}
                   onChange={(e) => setFormData({...formData, companyName: e.target.value})}
-                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
                   placeholder="E.g. Re/Max, Keller Williams"
                 />
               </div>
@@ -171,7 +171,7 @@ export default function SettingsForm({ initialData }: { initialData: Broker }) {
                 type="text"
                 value={formData.licenseNumber || ''}
                 onChange={(e) => setFormData({...formData, licenseNumber: e.target.value})}
-                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
                 placeholder="1234567"
               />
             </div>
@@ -184,7 +184,7 @@ export default function SettingsForm({ initialData }: { initialData: Broker }) {
               type="text"
               value={formData.specialization || ''}
               onChange={(e) => setFormData({...formData, specialization: e.target.value})}
-              className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+              className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
               placeholder="E.g. Luxury Condos, Commercial Lots, Pre-selling"
             />
           </div>
@@ -198,7 +198,7 @@ export default function SettingsForm({ initialData }: { initialData: Broker }) {
                 value={formData.officeAddress || ''}
                 onChange={(e) => setFormData({...formData, officeAddress: e.target.value})}
                 rows={2}
-                className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all resize-none"
+                className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all resize-none"
                 placeholder="Full office address"
               />
             </div>
@@ -208,7 +208,7 @@ export default function SettingsForm({ initialData }: { initialData: Broker }) {
         {/* Contact & Socials */}
         <div className="glass-card p-6 md:p-8 rounded-3xl space-y-6">
           <div className="flex items-center gap-2 border-b border-slate-100 pb-4 mb-6">
-            <LinkIcon className="w-5 h-5 text-indigo-500" />
+            <LinkIcon className="w-5 h-5 text-teal-500" />
             <h3 className="text-lg font-bold text-slate-900">Contact & Socials</h3>
           </div>
           
@@ -226,7 +226,7 @@ export default function SettingsForm({ initialData }: { initialData: Broker }) {
                     const val = e.target.value.replace(/\D/g, '').slice(0, 10);
                     setFormData({...formData, whatsappNumber: val ? `+63${val}` : ''});
                   }}
-                  className="w-full pl-12 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                  className="w-full pl-12 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
                   placeholder="9123456789"
                 />
               </div>
@@ -243,7 +243,7 @@ export default function SettingsForm({ initialData }: { initialData: Broker }) {
                     const val = e.target.value.replace(/\D/g, '').slice(0, 10);
                     setFormData({...formData, contactNumber: val ? `+63${val}` : ''});
                   }}
-                  className="w-full pl-12 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                  className="w-full pl-12 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
                   placeholder="9123456789"
                 />
               </div>
@@ -257,7 +257,7 @@ export default function SettingsForm({ initialData }: { initialData: Broker }) {
                   type="email"
                   value={formData.publicEmail || ''}
                   onChange={(e) => setFormData({...formData, publicEmail: e.target.value})}
-                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
                   placeholder="hello@broker.com"
                 />
               </div>
@@ -271,7 +271,7 @@ export default function SettingsForm({ initialData }: { initialData: Broker }) {
                   type="url"
                   value={formData.websiteUrl || ''}
                   onChange={(e) => setFormData({...formData, websiteUrl: e.target.value})}
-                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
                   placeholder="https://mywebsite.com"
                 />
               </div>
@@ -285,7 +285,7 @@ export default function SettingsForm({ initialData }: { initialData: Broker }) {
                   type="url"
                   value={formData.facebookUrl || ''}
                   onChange={(e) => setFormData({...formData, facebookUrl: e.target.value})}
-                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
                   placeholder="https://facebook.com/broker"
                 />
               </div>
@@ -299,7 +299,7 @@ export default function SettingsForm({ initialData }: { initialData: Broker }) {
                   type="url"
                   value={formData.instagramUrl || ''}
                   onChange={(e) => setFormData({...formData, instagramUrl: e.target.value})}
-                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
                   placeholder="https://instagram.com/broker"
                 />
               </div>
@@ -313,7 +313,7 @@ export default function SettingsForm({ initialData }: { initialData: Broker }) {
                   type="url"
                   value={formData.linkedinUrl || ''}
                   onChange={(e) => setFormData({...formData, linkedinUrl: e.target.value})}
-                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all"
                   placeholder="https://linkedin.com/in/broker"
                 />
               </div>
@@ -334,7 +334,7 @@ export default function SettingsForm({ initialData }: { initialData: Broker }) {
         <button
           type="submit"
           disabled={isSaving || isUploading}
-          className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-xl font-bold transition-all shadow-md shadow-indigo-500/20 disabled:opacity-70 cursor-pointer"
+          className="flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white px-8 py-3 rounded-xl font-bold transition-all shadow-md shadow-teal-500/20 disabled:opacity-70 cursor-pointer"
         >
           {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
           Save Changes

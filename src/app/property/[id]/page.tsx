@@ -19,7 +19,7 @@ export default async function PropertyDetailsPage(props: { params: Promise<{ id:
     where: { id },
     include: {
       images: true,
-      broker: true,
+      broker: { include: { user: true } },
     }
   });
 
@@ -29,6 +29,31 @@ export default async function PropertyDetailsPage(props: { params: Promise<{ id:
 
   const session = await getSession();
   const userId = session?.userId as string | undefined;
+
+  let canView = false;
+  if (property.visibility === 'PUBLIC') {
+    canView = true;
+  } else if (userId) {
+    // If it's the owner
+    if (property.broker.user?.id === userId) {
+      canView = true;
+    } else if (property.visibility === 'FRIENDS' && property.broker.user) {
+      const connection = await prisma.connection.findFirst({
+        where: {
+          status: 'ACCEPTED',
+          OR: [
+            { requesterId: userId, receiverId: property.broker.user.id },
+            { requesterId: property.broker.user.id, receiverId: userId }
+          ]
+        }
+      });
+      if (connection) canView = true;
+    }
+  }
+
+  if (!canView) {
+    notFound();
+  }
 
   const formatter = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP', minimumFractionDigits: 0 });
 
@@ -40,9 +65,7 @@ export default async function PropertyDetailsPage(props: { params: Promise<{ id:
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           <BackButton />
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold text-sm shadow-md shadow-indigo-500/20">
-              B
-            </div>
+            <img src="/brokerSpace.png" alt="BrokerSpace Logo" className="h-12 w-auto object-contain" />
             <span className="text-xl font-bold bg-gradient-to-r from-slate-900 to-slate-600 bg-clip-text text-transparent">BrokerSpace</span>
           </div>
         </div>
@@ -54,7 +77,7 @@ export default async function PropertyDetailsPage(props: { params: Promise<{ id:
         <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
             <div className="flex items-center gap-3 mb-4">
-              <span className="bg-indigo-100 text-indigo-700 text-sm font-bold px-4 py-1.5 rounded-full">
+              <span className="bg-teal-100 text-teal-700 text-sm font-bold px-4 py-1.5 rounded-full">
                 {property.propertyType}
               </span>
               <span className={`text-sm font-bold px-4 py-1.5 rounded-full text-white ${
@@ -67,21 +90,23 @@ export default async function PropertyDetailsPage(props: { params: Promise<{ id:
               {property.title}
             </h1>
             <div className="flex items-start gap-2 text-slate-500 text-lg">
-              <MapPin className="w-5 h-5 text-indigo-500 shrink-0 mt-1" />
+              <MapPin className="w-5 h-5 text-teal-500 shrink-0 mt-1" />
               <span className="break-words">
                 {[property.addressLine1, property.city, property.stateProvince, property.region].filter(Boolean).join(', ') || 'Address not specified'}
               </span>
             </div>
           </div>
           <div className="md:text-right">
-            <p className="text-4xl lg:text-5xl font-black text-indigo-600">
+            <p className="text-4xl lg:text-5xl font-black text-teal-600">
               {formatter.format(Number(property.price))}
             </p>
           </div>
         </div>
 
         {/* Gallery Section */}
-        <PropertyGallery images={property.images} title={property.title} />
+        {property.images && property.images.length > 0 && (
+          <PropertyGallery images={property.images} title={property.title} />
+        )}
 
         {/* Content Section */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
@@ -92,22 +117,24 @@ export default async function PropertyDetailsPage(props: { params: Promise<{ id:
             {/* Overview Cards */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col gap-2">
-                <FileText className="w-6 h-6 text-indigo-500" />
+                <FileText className="w-6 h-6 text-teal-500" />
                 <span className="text-sm font-semibold text-slate-500 uppercase">Property Type</span>
                 <span className="text-lg font-bold text-slate-900">{property.propertyType}</span>
               </div>
               <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col gap-2">
-                <Maximize className="w-6 h-6 text-indigo-500" />
+                <Maximize className="w-6 h-6 text-teal-500" />
                 <span className="text-sm font-semibold text-slate-500 uppercase">Size Area</span>
                 <span className="text-lg font-bold text-slate-900">{property.sizeSqm ? `${property.sizeSqm} sqm` : 'N/A'}</span>
               </div>
               <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col gap-2">
-                <MapPin className="w-6 h-6 text-indigo-500" />
+                <MapPin className="w-6 h-6 text-teal-500" />
                 <span className="text-sm font-semibold text-slate-500 uppercase">Location</span>
-                <span className="text-lg font-bold text-slate-900 line-clamp-1">{property.city || 'N/A'}</span>
+                <span className="text-lg font-bold text-slate-900 line-clamp-1">
+                  {property.locationVisibility === 'PRIVATE' ? <span className="italic text-slate-500">{property.stateProvince || property.city || 'Private Location'}</span> : (property.city || 'N/A')}
+                </span>
               </div>
               <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col gap-2">
-                <Calendar className="w-6 h-6 text-indigo-500" />
+                <Calendar className="w-6 h-6 text-teal-500" />
                 <span className="text-sm font-semibold text-slate-500 uppercase">Listed Date</span>
                 <span className="text-lg font-bold text-slate-900">{new Date(property.createdAt).toLocaleDateString()}</span>
               </div>
@@ -122,10 +149,10 @@ export default async function PropertyDetailsPage(props: { params: Promise<{ id:
             </div>
 
             {/* Map Location */}
-            {property.latitude && property.longitude && (
+            {property.locationVisibility !== 'PRIVATE' && property.latitude && property.longitude && (
               <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm">
                 <h2 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2">
-                  <MapPin className="w-6 h-6 text-indigo-500" />
+                  <MapPin className="w-6 h-6 text-teal-500" />
                   Map Location
                 </h2>
                 <div className="h-[300px] w-full relative z-0">
@@ -145,7 +172,7 @@ export default async function PropertyDetailsPage(props: { params: Promise<{ id:
               <h3 className="text-xl font-bold text-slate-900 mb-6">Contact Broker</h3>
               
               <div className="flex flex-col items-center text-center mb-8">
-                <div className="w-24 h-24 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-700 font-bold overflow-hidden shadow-inner mb-4">
+                <div className="w-24 h-24 rounded-full bg-teal-50 flex items-center justify-center text-teal-700 font-bold overflow-hidden shadow-inner mb-4">
                   {property.broker.profilePictureUrl ? (
                     <img src={property.broker.profilePictureUrl} alt={property.broker.name} className="w-full h-full object-cover" />
                   ) : (
@@ -169,12 +196,12 @@ export default async function PropertyDetailsPage(props: { params: Promise<{ id:
               {/* Additional Broker Links */}
               <div className="flex flex-col gap-3 pt-6 border-t border-slate-100">
                 {property.broker.facebookUrl && (
-                  <a href={property.broker.facebookUrl} target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:text-indigo-700 font-medium text-sm text-center">
+                  <a href={property.broker.facebookUrl} target="_blank" rel="noopener noreferrer" className="text-teal-600 hover:text-teal-700 font-medium text-sm text-center">
                     View Facebook Profile
                   </a>
                 )}
                 {property.broker.linkedinUrl && (
-                  <a href={property.broker.linkedinUrl} target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:text-indigo-700 font-medium text-sm text-center">
+                  <a href={property.broker.linkedinUrl} target="_blank" rel="noopener noreferrer" className="text-teal-600 hover:text-teal-700 font-medium text-sm text-center">
                     View LinkedIn Profile
                   </a>
                 )}

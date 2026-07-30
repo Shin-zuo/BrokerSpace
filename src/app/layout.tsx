@@ -11,6 +11,9 @@ const outfit = Outfit({
 export const metadata: Metadata = {
   title: "BrokerSpace",
   description: "Modern Real Estate Broker Platform",
+  icons: {
+    icon: "/brokerSpace.png",
+  },
 };
 
 export default function RootLayout({

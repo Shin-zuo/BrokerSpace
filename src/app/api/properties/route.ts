@@ -10,8 +10,11 @@ export async function GET(request: Request) {
     const mine = searchParams.get("mine");
     let brokerId: string | undefined = undefined;
 
+    const session = await getSession();
+    let viewerBrokerId = session?.brokerId as string | undefined;
+    let viewerUserId = session?.userId as string | undefined;
+
     if (mine) {
-      const session = await getSession();
       if (!session || !session.userId) {
         return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
       }
@@ -20,7 +23,7 @@ export async function GET(request: Request) {
       }
     }
 
-    const properties = await PropertyController.getAll(brokerId);
+    const properties = await PropertyController.getAll(brokerId, viewerBrokerId, viewerUserId);
     return NextResponse.json({ success: true, data: properties });
   } catch (error: any) {
     console.error("GET /api/properties error:", error);

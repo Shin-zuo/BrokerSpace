@@ -80,7 +80,7 @@ export default function ProfileActions({ currentUserId, targetUserId, brokerId }
         <button 
           onClick={handleConnect}
           disabled={isUpdating}
-          className="bg-white hover:bg-slate-50 text-indigo-600 border border-indigo-200 px-6 py-2.5 rounded-xl font-medium transition-colors flex items-center gap-2"
+          className="bg-white hover:bg-slate-50 text-teal-600 border border-teal-200 px-6 py-2.5 rounded-xl font-medium transition-colors flex items-center gap-2"
         >
           <UserPlus className="w-5 h-5" />
           Connect
@@ -96,7 +96,7 @@ export default function ProfileActions({ currentUserId, targetUserId, brokerId }
             <button 
               onClick={() => handleUpdateConnection(connection.id, 'ACCEPTED')}
               disabled={isUpdating}
-              className="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-4 py-2.5 rounded-xl font-medium transition-colors flex items-center gap-2"
+              className="bg-teal-50 hover:bg-teal-100 text-teal-700 px-4 py-2.5 rounded-xl font-medium transition-colors flex items-center gap-2"
             >
               <Check className="w-5 h-5" /> Accept
             </button>
@@ -118,7 +118,7 @@ export default function ProfileActions({ currentUserId, targetUserId, brokerId }
         <button 
           onClick={handleConnect}
           disabled={isUpdating}
-          className="bg-white hover:bg-slate-50 text-indigo-600 border border-indigo-200 px-6 py-2.5 rounded-xl font-medium transition-colors flex items-center gap-2"
+          className="bg-white hover:bg-slate-50 text-teal-600 border border-teal-200 px-6 py-2.5 rounded-xl font-medium transition-colors flex items-center gap-2"
         >
           <UserPlus className="w-5 h-5" />
           Reconnect
@@ -129,7 +129,7 @@ export default function ProfileActions({ currentUserId, targetUserId, brokerId }
       <button 
         onClick={handleMessage}
         disabled={isOpeningChat}
-        className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-xl font-medium transition-colors flex items-center gap-2 disabled:opacity-50"
+        className="bg-teal-600 hover:bg-teal-700 text-white px-6 py-2.5 rounded-xl font-medium transition-colors flex items-center gap-2 disabled:opacity-50"
       >
         <MessageSquare className="w-5 h-5" />
         Message

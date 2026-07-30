@@ -31,7 +31,7 @@ export default function MessageBrokerButton({ brokerId, propertyId }: { brokerId
     <button 
       onClick={handleMessage}
       disabled={isLoading}
-      className="w-full bg-indigo-600 text-white font-bold py-3 rounded-xl hover:bg-indigo-700 transition-colors mt-4 disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
+      className="w-full bg-teal-600 text-white font-bold py-3 rounded-xl hover:bg-teal-700 transition-colors mt-4 disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
     >
       {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Message Broker'}
     </button>

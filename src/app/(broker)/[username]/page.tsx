@@ -50,7 +50,27 @@ export default async function ProfilePage(props: { params: Promise<{ username: s
   }
 
   const isOwner = currentUserId === targetUser.id;
-  const properties = targetUser.broker.properties;
+  
+  let isFriend = false;
+  if (!isOwner) {
+    const connection = await prisma.connection.findFirst({
+      where: {
+        status: 'ACCEPTED',
+        OR: [
+          { requesterId: currentUserId, receiverId: targetUser.id },
+          { requesterId: targetUser.id, receiverId: currentUserId }
+        ]
+      }
+    });
+    isFriend = !!connection;
+  }
+
+  const properties = targetUser.broker.properties.filter((prop: any) => {
+    if (isOwner) return true;
+    if (prop.visibility === 'PUBLIC') return true;
+    if (prop.visibility === 'FRIENDS' && isFriend) return true;
+    return false;
+  });
 
   // Simple Analytics Calculation
   const totalListings = properties.length;
@@ -74,7 +94,7 @@ export default async function ProfilePage(props: { params: Promise<{ username: s
       </div>
       {/* Profile Header */}
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-8">
-        <div className="h-32 bg-gradient-to-r from-indigo-500 to-purple-600 relative">
+        <div className="h-32 bg-gradient-to-r from-teal-500 to-cyan-600 relative">
           {isOwner && (
             <Link href="/settings" className="absolute top-4 right-4 bg-white/20 hover:bg-white/30 backdrop-blur-md text-white p-2 rounded-xl transition-colors">
               <Settings className="w-5 h-5" />
@@ -82,7 +102,7 @@ export default async function ProfilePage(props: { params: Promise<{ username: s
           )}
         </div>
         <div className="px-8 pb-8 relative">
-          <div className="w-24 h-24 rounded-2xl bg-white border-4 border-white shadow-md flex items-center justify-center text-indigo-600 -mt-12 mb-4 overflow-hidden">
+          <div className="w-24 h-24 rounded-2xl bg-white border-4 border-white shadow-md flex items-center justify-center text-teal-600 -mt-12 mb-4 overflow-hidden">
             {targetUser.broker.profilePictureUrl ? (
               <img src={targetUser.broker.profilePictureUrl} alt={targetUser.broker.name} className="w-full h-full object-cover" />
             ) : (
@@ -110,7 +130,7 @@ export default async function ProfilePage(props: { params: Promise<{ username: s
           <div className="lg:col-span-1 space-y-6">
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
               <h2 className="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
-                <Eye className="w-5 h-5 text-indigo-500" />
+                <Eye className="w-5 h-5 text-teal-500" />
                 Your Analytics
               </h2>
               <div className="space-y-6">
@@ -120,8 +140,8 @@ export default async function ProfilePage(props: { params: Promise<{ username: s
                 </div>
                 <div>
                   <p className="text-sm text-slate-500 font-medium mb-1">Total Likes</p>
-                  <p className="text-3xl font-bold text-indigo-600 flex items-center gap-2">
-                    {totalLikes} <Heart className="w-5 h-5 fill-indigo-100" />
+                  <p className="text-3xl font-bold text-teal-600 flex items-center gap-2">
+                    {totalLikes} <Heart className="w-5 h-5 fill-teal-100" />
                   </p>
                 </div>
                 <div>
@@ -145,7 +165,7 @@ export default async function ProfilePage(props: { params: Promise<{ username: s
           <div className="lg:col-span-3">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold text-slate-900">Manage Listings</h2>
-              <Link href="/properties" className="bg-indigo-50 text-indigo-600 hover:bg-indigo-100 px-4 py-2 rounded-lg font-medium transition-colors text-sm">
+              <Link href="/properties" className="bg-teal-50 text-teal-600 hover:bg-teal-100 px-4 py-2 rounded-lg font-medium transition-colors text-sm">
                 Manage in Dashboard
               </Link>
             </div>
@@ -153,7 +173,7 @@ export default async function ProfilePage(props: { params: Promise<{ username: s
             {serializedProperties.length === 0 ? (
               <div className="bg-white rounded-2xl border border-slate-200 border-dashed py-16 text-center">
                 <p className="text-slate-500 mb-4">You don't have any active listings yet.</p>
-                <Link href="/properties" className="bg-indigo-600 text-white px-6 py-2.5 rounded-xl font-medium hover:bg-indigo-700 transition-colors inline-block">
+                <Link href="/properties" className="bg-teal-600 text-white px-6 py-2.5 rounded-xl font-medium hover:bg-teal-700 transition-colors inline-block">
                   Create your first listing
                 </Link>
               </div>
@@ -173,8 +193,8 @@ export default async function ProfilePage(props: { params: Promise<{ username: s
                       <p className="text-slate-500 text-sm mb-2">{property.city}, {property.region}</p>
                       <div className="flex items-center gap-4 text-xs font-medium text-slate-600">
                         <span className="flex items-center gap-1"><Heart className="w-3.5 h-3.5 text-red-500" /> {property.likes?.length || 0}</span>
-                        <span className="flex items-center gap-1"><Bookmark className="w-3.5 h-3.5 text-indigo-500" /> {property.saves?.length || 0}</span>
-                        <span className="text-indigo-600 font-bold bg-indigo-50 px-2 py-0.5 rounded-md">
+                        <span className="flex items-center gap-1"><Bookmark className="w-3.5 h-3.5 text-teal-500" /> {property.saves?.length || 0}</span>
+                        <span className="text-teal-600 font-bold bg-teal-50 px-2 py-0.5 rounded-md">
                           {new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP', minimumFractionDigits: 0 }).format(property.price)}
                         </span>
                       </div>
