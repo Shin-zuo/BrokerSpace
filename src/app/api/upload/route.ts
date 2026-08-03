@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
-import { existsSync } from 'fs';
+import { uploadImage } from '@/src/lib/cloudinary';
 
 export async function POST(request: NextRequest) {
   try {
@@ -15,22 +13,13 @@ export async function POST(request: NextRequest) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // Create unique filename
-    const fileExtension = file.name.split('.').pop() || 'png';
-    const uniqueFilename = `${Date.now()}-${Math.round(Math.random() * 1000)}.${fileExtension}`;
-    
-    // Ensure directory exists
-    const uploadDir = join(process.cwd(), 'public', 'uploads', 'profiles');
-    if (!existsSync(uploadDir)) {
-      await mkdir(uploadDir, { recursive: true });
+    try {
+      const publicUrl = await uploadImage(buffer, "sg-brokerspace/profiles");
+      return NextResponse.json({ url: publicUrl });
+    } catch (error) {
+      console.error('Cloudinary upload error:', error);
+      return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
     }
-
-    const filepath = join(uploadDir, uniqueFilename);
-    await writeFile(filepath, buffer);
-
-    const publicUrl = `/uploads/profiles/${uniqueFilename}`;
-
-    return NextResponse.json({ url: publicUrl });
   } catch (error) {
     console.error('Error uploading file:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
