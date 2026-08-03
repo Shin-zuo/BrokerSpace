@@ -7,17 +7,17 @@ export default function MarketingPage() {
     <div className="min-h-screen bg-slate-50 flex flex-col">
       {/* Navigation */}
       <nav className="fixed w-full z-50 glass-panel border-b border-white/50 bg-white/70 backdrop-blur-xl">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <img src="/brokerSpace.png" alt="BrokerSpace Logo" className="h-16 w-auto object-contain" />
-            <span className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-slate-600 bg-clip-text text-transparent">BrokerSpace</span>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            <img src="/brokerSpace.png" alt="BrokerSpace Logo" className="h-12 sm:h-16 w-auto object-contain" />
+            <span className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-slate-900 to-slate-600 bg-clip-text text-transparent hidden sm:block">BrokerSpace</span>
           </div>
-          <div className="flex items-center gap-4">
-            <Link href="/login" className="text-slate-600 hover:text-slate-900 font-medium px-4 py-2 transition-colors">
+          <div className="flex items-center gap-2 sm:gap-4">
+            <Link href="/login" className="text-slate-600 hover:text-slate-900 font-medium px-2 sm:px-4 py-2 transition-colors text-sm sm:text-base">
               Log in
             </Link>
-            <Link href="/signup" className="bg-teal-600 hover:bg-teal-700 text-white font-medium px-6 py-2.5 rounded-full shadow-md shadow-teal-500/20 transition-all">
-              Sign up as Broker
+            <Link href="/signup" className="bg-teal-600 hover:bg-teal-700 text-white font-medium px-4 sm:px-6 py-2 sm:py-2.5 rounded-full shadow-md shadow-teal-500/20 transition-all text-sm sm:text-base whitespace-nowrap">
+              Sign up <span className="hidden sm:inline">as Broker</span>
             </Link>
           </div>
         </div>
