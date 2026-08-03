@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Plus, Building2, Users, TrendingUp, User as UserIcon, Network } from 'lucide-react';
 import { getSession } from '@/src/lib/auth';
 import { getVisibilityFilter } from '@/src/lib/propertyFilters';
+import FeedSidebar from './FeedSidebar';
 
 export const dynamic = 'force-dynamic';
 
@@ -76,48 +77,7 @@ export default async function FeedPage() {
       <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] xl:grid-cols-[280px_1fr_300px] gap-6 lg:gap-8 items-start">
         
         {/* Left Sidebar (Profile & Navigation) */}
-        <div className="hidden lg:block sticky top-24">
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-6">
-            <div className="h-16 bg-gradient-to-r from-teal-500 to-cyan-600"></div>
-            <div className="px-6 pb-6 relative">
-              <div className="w-16 h-16 rounded-2xl bg-white border-4 border-white shadow-md flex items-center justify-center text-teal-600 -mt-8 mb-3 overflow-hidden">
-                 {currentUser?.broker?.profilePictureUrl ? (
-                   <img src={currentUser.broker.profilePictureUrl} alt="Profile" className="w-full h-full object-cover" />
-                 ) : (
-                   <UserIcon className="w-8 h-8" />
-                 )}
-              </div>
-              <h2 className="text-lg font-bold text-slate-900 leading-tight">{currentUser?.broker?.name || 'Broker'}</h2>
-              <p className="text-sm text-slate-500 mb-4">@{currentUser?.username || 'broker'}</p>
-              
-              <div className="flex items-center justify-between text-sm text-slate-600 border-t border-slate-100 pt-4">
-                <span>My Listings</span>
-                <span className="font-bold text-slate-900">Active</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="space-y-1">
-            <Link href={`/${currentUser?.username || 'profile'}`} className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-slate-700 hover:bg-slate-100 font-medium transition-colors cursor-pointer">
-              <UserIcon className="w-5 h-5 text-slate-400" />
-              My Profile
-            </Link>
-            <Link href="/properties" className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-slate-700 hover:bg-slate-100 font-medium transition-colors cursor-pointer">
-              <Building2 className="w-5 h-5 text-slate-400" />
-              Manage Listings
-            </Link>
-            <Link href="/saved" className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-slate-700 hover:bg-slate-100 font-medium transition-colors cursor-pointer">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-bookmark text-slate-400">
-                <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/>
-              </svg>
-              Saved Listings
-            </Link>
-            <Link href="/network" className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-slate-700 hover:bg-slate-100 font-medium transition-colors cursor-pointer">
-              <Network className="w-5 h-5 text-slate-400" />
-              My Network
-            </Link>
-          </div>
-        </div>
+        <FeedSidebar currentUser={currentUser} />
 
         {/* Main Feed */}
         <div className="w-full max-w-2xl mx-auto min-w-0">

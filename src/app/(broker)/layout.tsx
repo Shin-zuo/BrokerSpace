@@ -4,6 +4,7 @@ import { getSession } from "@/src/lib/auth";
 import { prisma } from "@/src/lib/prisma";
 import { ChatProvider } from "@/src/components/chat/ChatContext";
 import FloatingChat from "@/src/components/chat/FloatingChat";
+import { SidebarProvider } from "@/src/components/layout/SidebarContext";
 
 export default async function BrokerLayout({
   children,
@@ -20,14 +21,16 @@ export default async function BrokerLayout({
   }
 
   return (
-    <ChatProvider>
-      <div className="min-h-screen bg-slate-50 text-slate-900 pt-16">
-        <Navbar user={user} />
-        <main className="w-full h-full">
-          {children}
-        </main>
-        {user && <FloatingChat currentUserId={user.id} />}
-      </div>
-    </ChatProvider>
+    <SidebarProvider>
+      <ChatProvider>
+        <div className="min-h-screen bg-slate-50 text-slate-900 pt-16">
+          <Navbar user={user} />
+          <main className="w-full h-full">
+            {children}
+          </main>
+          {user && <FloatingChat currentUserId={user.id} />}
+        </div>
+      </ChatProvider>
+    </SidebarProvider>
   );
 }

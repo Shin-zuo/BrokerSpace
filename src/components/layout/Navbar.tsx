@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, MessageSquare, Search, Settings, LogOut, User, Bell, X } from 'lucide-react';
 import NavbarSearch from './NavbarSearch';
+import { useSidebar } from './SidebarContext';
+import { Menu } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { logoutAction } from '@/src/app/actions/auth';
 import useSWR from 'swr';
@@ -15,6 +17,7 @@ const fetcher = (url: string) => fetch(url).then(res => res.json());
 export default function Navbar({ user }: { user?: any }) {
   const pathname = usePathname();
   const { openChat } = useChat();
+  const { toggleSidebar } = useSidebar();
   
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMessagesOpen, setIsMessagesOpen] = useState(false);
@@ -71,10 +74,18 @@ export default function Navbar({ user }: { user?: any }) {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 h-16 bg-white/80 border-b border-gray-200 z-50 flex items-center justify-between px-6 backdrop-blur-md">
-      <div className="flex items-center gap-8">
-        <Link href="/feed" className="flex items-center gap-2 cursor-pointer">
-          <img src="/brokerSpace.png" alt="BrokerSpace Logo" className="h-12 w-auto object-contain" />
+    <nav className="fixed top-0 left-0 right-0 h-16 bg-white/80 border-b border-gray-200 z-50 flex items-center justify-between px-4 sm:px-6 backdrop-blur-md">
+      <div className="flex items-center gap-1 sm:gap-4 lg:gap-8">
+        {pathname === '/feed' && (
+          <button 
+            onClick={toggleSidebar}
+            className="lg:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors flex items-center justify-center border-none outline-none"
+          >
+            <Menu className="w-6 h-6" />
+          </button>
+        )}
+        <Link href="/feed" className="flex items-center gap-2 cursor-pointer pl-1 sm:pl-0">
+          <img src="/brokerSpace.png" alt="BrokerSpace Logo" className="h-10 sm:h-12 w-auto object-contain" />
           <span className="text-xl font-bold text-slate-900 tracking-tight hidden sm:block">BrokerSpace</span>
         </Link>
         
