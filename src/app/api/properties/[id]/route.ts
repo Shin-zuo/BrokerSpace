@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { PropertyController } from "@/src/controllers/propertyController";
-import fs from "fs";
-import path from "path";
+import { uploadImage } from "@/src/lib/cloudinary";
 import { getSession } from "@/src/lib/auth";
 
 export async function PUT(request: Request, props: { params: Promise<{ id: string }> }) {
@@ -24,17 +23,13 @@ export async function PUT(request: Request, props: { params: Promise<{ id: strin
         if (file instanceof File && file.size > 0) {
           const bytes = await file.arrayBuffer();
           const buffer = Buffer.from(bytes);
-          const fileName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
-          const uploadDir = path.join(process.cwd(), "public/uploads/properties");
           
-          if (!fs.existsSync(uploadDir)) {
-            fs.mkdirSync(uploadDir, { recursive: true });
+          try {
+            const secureUrl = await uploadImage(buffer, "sg-brokerspace/properties");
+            imageUrls.push(secureUrl);
+          } catch (error) {
+            console.error("Cloudinary upload failed:", error);
           }
-          
-          const filePath = path.join(uploadDir, fileName);
-          fs.writeFileSync(filePath, buffer);
-          
-          imageUrls.push(`/uploads/properties/${fileName}`);
         }
       }
       
