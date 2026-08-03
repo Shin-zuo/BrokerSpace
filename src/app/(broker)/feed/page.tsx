@@ -4,6 +4,7 @@ import PropertyCard from '@/src/components/ui/PropertyCard';
 import Link from 'next/link';
 import { Plus, Building2, Users, TrendingUp, User as UserIcon, Network } from 'lucide-react';
 import { getSession } from '@/src/lib/auth';
+import { getVisibilityFilter } from '@/src/lib/propertyFilters';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,8 +18,16 @@ export default async function FeedPage() {
     });
   }
 
+  const visibilityFilter = await getVisibilityFilter(
+    currentUser?.id,
+    currentUser?.broker?.id
+  );
+
   const rawProperties = await prisma.property.findMany({
-    where: { status: 'Available' },
+    where: { 
+      status: 'Available',
+      AND: [visibilityFilter]
+    },
     orderBy: { createdAt: 'desc' },
     include: { 
       images: true, 

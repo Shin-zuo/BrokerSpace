@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Search, User, Building2 } from 'lucide-react';
 import { getSession } from '@/src/lib/auth';
 import BackButton from '@/src/components/ui/BackButton';
+import { getVisibilityFilter } from '@/src/lib/propertyFilters';
 
 export const dynamic = 'force-dynamic';
 
@@ -12,6 +13,14 @@ export default async function SearchPage(props: { searchParams: Promise<{ q?: st
   const searchParams = await props.searchParams;
   const session = await getSession();
   const currentUserId = session?.userId as string;
+
+  let currentUser = null;
+  if (session) {
+    currentUser = await prisma.user.findUnique({
+      where: { id: currentUserId },
+      include: { broker: true }
+    });
+  }
 
   const query = searchParams.q || '';
   
@@ -30,10 +39,16 @@ export default async function SearchPage(props: { searchParams: Promise<{ q?: st
     );
   }
 
+  const visibilityFilter = await getVisibilityFilter(
+    currentUser?.id,
+    currentUser?.broker?.id
+  );
+
   // Fetch properties matching query
   const rawProperties = await prisma.property.findMany({
     where: {
       status: 'Available',
+      AND: [visibilityFilter],
       OR: [
         { title: { contains: query, mode: 'insensitive' } },
         { city: { contains: query, mode: 'insensitive' } },
