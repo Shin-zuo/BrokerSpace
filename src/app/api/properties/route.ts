@@ -51,8 +51,9 @@ export async function POST(request: Request) {
           try {
             const secureUrl = await uploadImage(buffer, "sg-brokerspace/properties");
             imageUrls.push(secureUrl);
-          } catch (error) {
+          } catch (error: any) {
             console.error("Cloudinary upload failed:", error);
+            throw new Error(`Image upload failed: ${error.message}`);
           }
         }
       }

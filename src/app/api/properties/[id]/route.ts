@@ -27,8 +27,9 @@ export async function PUT(request: Request, props: { params: Promise<{ id: strin
           try {
             const secureUrl = await uploadImage(buffer, "sg-brokerspace/properties");
             imageUrls.push(secureUrl);
-          } catch (error) {
+          } catch (error: any) {
             console.error("Cloudinary upload failed:", error);
+            throw new Error(`Image upload failed: ${error.message}`);
           }
         }
       }
