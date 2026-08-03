@@ -98,7 +98,9 @@ export default function Navbar({ user }: { user?: any }) {
           <span className="hidden sm:block">Feed</span>
         </Link>
 
-        {/* Notifications Dropdown */}
+        {user ? (
+          <>
+            {/* Notifications Dropdown */}
         <div className="relative" ref={notificationsRef}>
           <button 
             onClick={() => {
@@ -315,6 +317,17 @@ export default function Navbar({ user }: { user?: any }) {
             )}
           </AnimatePresence>
         </div>
+          </>
+        ) : (
+          <div className="flex items-center gap-3 ml-2">
+            <Link href="/login" className="px-4 py-2 text-sm font-bold text-slate-700 hover:text-teal-600 transition-colors">
+              Log In
+            </Link>
+            <Link href="/signup" className="px-4 py-2 text-sm font-bold text-white bg-teal-600 hover:bg-teal-700 rounded-lg transition-colors shadow-sm">
+              Sign Up
+            </Link>
+          </div>
+        )}
       </div>
     </nav>
   );
