@@ -20,4 +20,25 @@ export async function uploadImage(buffer: Buffer, folder: string): Promise<strin
   });
 }
 
+export async function deleteImage(url: string): Promise<void> {
+  try {
+    const parts = url.split('/upload/');
+    if (parts.length === 2) {
+      const pathParts = parts[1].split('/');
+      if (pathParts[0].startsWith('v') && !isNaN(parseInt(pathParts[0].substring(1)))) {
+        pathParts.shift();
+      }
+      const fullPath = pathParts.join('/');
+      const publicId = fullPath.substring(0, fullPath.lastIndexOf('.'));
+      
+      if (publicId) {
+        await cloudinary.uploader.destroy(publicId);
+        console.log("Successfully deleted Cloudinary image:", publicId);
+      }
+    }
+  } catch (error) {
+    console.error('Failed to delete image from Cloudinary:', error);
+  }
+}
+
 export { cloudinary };

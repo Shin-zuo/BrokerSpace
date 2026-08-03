@@ -1,4 +1,5 @@
 import { prisma } from "@/src/lib/prisma";
+import { deleteImage } from "@/src/lib/cloudinary";
 
 export class PropertyController {
   static async getAll(brokerId?: string, viewerBrokerId?: string, viewerUserId?: string) {
@@ -104,9 +105,9 @@ export class PropertyController {
             } catch (e) {
               console.error("Failed to delete file:", e);
             }
-          } else {
-            console.log("File does not exist at path:", filePath);
           }
+        } else if (img.url.includes('cloudinary.com')) {
+          await deleteImage(img.url);
         }
       }
     }
@@ -161,9 +162,9 @@ export class PropertyController {
           } catch (e) {
             console.error("Failed to delete file on property delete:", e);
           }
-        } else {
-          console.log("File does not exist at path:", filePath);
         }
+      } else if (img.url.includes('cloudinary.com')) {
+        await deleteImage(img.url);
       }
     }
 
