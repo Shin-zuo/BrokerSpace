@@ -2,7 +2,7 @@
 
 import React, { useState, useRef } from 'react';
 import { Camera, Save, Loader2, Link as LinkIcon, Mail, MapPin, Building2, Briefcase, Globe } from 'lucide-react';
-import { Broker } from '@prisma/client';
+import { Broker } from '@/src/generated/prisma/client';
 
 export default function SettingsForm({ initialData }: { initialData: Broker }) {
   const [formData, setFormData] = useState<Partial<Broker>>({

@@ -182,7 +182,9 @@ export default async function PropertyDetailsPage(props: { params: Promise<{ id:
                 <h4 className="text-xl font-bold text-slate-900 flex items-center justify-center gap-1.5">
                   {property.broker.name}
                   {property.broker.licenseNumber && (
-                    <CheckCircle2 className="w-5 h-5 text-blue-500" title="Verified License" />
+                    <span title="Verified License">
+                      <CheckCircle2 className="w-5 h-5 text-blue-500" />
+                    </span>
                   )}
                 </h4>
                 <p className="text-slate-500 mt-1">{property.broker.companyName || 'Independent Broker'}</p>
