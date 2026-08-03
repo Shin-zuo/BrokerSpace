@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/src/lib/prisma';
 import { getSession } from '@/src/lib/auth';
+import { deleteImage } from '@/src/lib/cloudinary';
+import fs from 'fs';
+import path from 'path';
 
 export async function GET(req: NextRequest) {
   try {
@@ -47,10 +50,31 @@ export async function PATCH(req: NextRequest) {
       }
     });
 
+    const oldBroker = await prisma.broker.findUnique({
+      where: { id: session.brokerId as string }
+    });
+
     const updatedBroker = await prisma.broker.update({
       where: { id: session.brokerId as string },
       data: updateData,
     });
+
+    if (oldBroker && updateData.profilePictureUrl && oldBroker.profilePictureUrl && oldBroker.profilePictureUrl !== updateData.profilePictureUrl) {
+      const oldUrl = oldBroker.profilePictureUrl;
+      if (oldUrl.startsWith('/uploads/profiles/')) {
+        const safeUrl = oldUrl.replace(/^\//, '');
+        const filePath = path.join(process.cwd(), "public", safeUrl);
+        if (fs.existsSync(filePath)) {
+          try {
+            fs.unlinkSync(filePath);
+          } catch (e) {
+            console.error("Failed to delete old local profile picture:", e);
+          }
+        }
+      } else if (oldUrl.includes('cloudinary.com')) {
+        await deleteImage(oldUrl);
+      }
+    }
 
     return NextResponse.json(updatedBroker);
   } catch (error) {
