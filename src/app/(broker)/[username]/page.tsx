@@ -4,7 +4,7 @@ import { getSession } from '@/src/lib/auth';
 import { notFound, redirect } from 'next/navigation';
 import PropertyCard from '@/src/components/ui/PropertyCard';
 import Link from 'next/link';
-import { User, Settings, Edit, Trash2, Eye, Heart, Bookmark, MessageSquare } from 'lucide-react';
+import { User, Settings, Edit, Trash2, Eye, Heart, Bookmark, MessageSquare, PieChart, ArrowRight } from 'lucide-react';
 import DeletePropertyButton from './DeletePropertyButton';
 import ProfileActions from '@/src/components/profile/ProfileActions';
 import BackButton from '@/src/components/ui/BackButton';
@@ -76,6 +76,17 @@ export default async function ProfilePage(props: { params: Promise<{ username: s
   const totalListings = properties.length;
   const totalLikes = properties.reduce((acc, prop) => acc + (prop.likes?.length || 0), 0);
   const totalSaves = properties.reduce((acc, prop) => acc + (prop.saves?.length || 0), 0);
+
+  let soldPercentage = 0;
+  if (isOwner) {
+    const totalProperties = await prisma.property.count({
+      where: { brokerId: targetUser.broker.id }
+    });
+    const soldProperties = await prisma.property.count({
+      where: { brokerId: targetUser.broker.id, status: 'Sold' }
+    });
+    soldPercentage = totalProperties > 0 ? Math.round((soldProperties / totalProperties) * 100) : 0;
+  }
 
   const serializedProperties = properties.map((property: any) => ({
     ...property,
@@ -150,7 +161,17 @@ export default async function ProfilePage(props: { params: Promise<{ username: s
                     {totalSaves} <Bookmark className="w-5 h-5 fill-emerald-100" />
                   </p>
                 </div>
+                <div>
+                  <p className="text-sm text-slate-500 font-medium mb-1">Properties Sold</p>
+                  <p className="text-3xl font-bold text-blue-600 flex items-center gap-2">
+                    {soldPercentage}% <PieChart className="w-5 h-5 fill-blue-100" />
+                  </p>
+                </div>
               </div>
+              <Link href="/dashboard" className="mt-6 flex items-center justify-center gap-2 w-full py-2.5 bg-slate-50 hover:bg-slate-100 text-slate-700 rounded-xl transition-colors font-medium text-sm">
+                View All Analytics
+                <ArrowRight className="w-4 h-4" />
+              </Link>
             </div>
             
             <Link href="/saved" className="bg-slate-900 hover:bg-slate-800 text-white w-full rounded-2xl p-4 flex items-center justify-between transition-colors">
