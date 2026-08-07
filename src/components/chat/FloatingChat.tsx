@@ -8,6 +8,31 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
+const formatMessage = (text: string, isMe: boolean) => {
+  if (!text) return text;
+  // Regex to match URLs (http, https, www, or simple domains)
+  const urlRegex = /(https?:\/\/[^\s]+|www\.[^\s]+)/g;
+  const parts = text.split(urlRegex);
+  
+  return parts.map((part, i) => {
+    if (part.match(urlRegex)) {
+      const href = part.startsWith('http') ? part : `https://${part}`;
+      return (
+        <a 
+          key={i} 
+          href={href} 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className={`underline ${isMe ? 'text-teal-100 hover:text-white' : 'text-teal-600 hover:text-teal-700'}`}
+        >
+          {part}
+        </a>
+      );
+    }
+    return <React.Fragment key={i}>{part}</React.Fragment>;
+  });
+};
+
 function ChatWindow({ conversationId, currentUserId }: { conversationId: string, currentUserId: string }) {
   const { closeChat } = useChat();
   const [isMinimized, setIsMinimized] = useState(false);
@@ -99,8 +124,8 @@ function ChatWindow({ conversationId, currentUserId }: { conversationId: string,
                 const isMe = msg.senderId === currentUserId;
                 return (
                   <div key={msg.id} className={`flex flex-col max-w-[85%] ${isMe ? 'self-end' : 'self-start'}`}>
-                    <div className={`px-3 py-2 rounded-2xl text-sm ${isMe ? 'bg-teal-600 text-white rounded-tr-sm' : 'bg-white border border-slate-200 text-slate-800 rounded-tl-sm shadow-sm'}`}>
-                      {msg.content}
+                    <div className={`px-3 py-2 rounded-2xl text-sm break-words whitespace-pre-wrap ${isMe ? 'bg-teal-600 text-white rounded-tr-sm' : 'bg-white border border-slate-200 text-slate-800 rounded-tl-sm shadow-sm'}`}>
+                      {formatMessage(msg.content, isMe)}
                     </div>
                     <span className={`text-[10px] text-slate-400 mt-1 ${isMe ? 'self-end' : 'self-start'}`}>
                       {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}

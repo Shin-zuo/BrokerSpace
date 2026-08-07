@@ -27,7 +27,7 @@ export default async function NetworkPage() {
     }
   });
 
-  const connectedUserIds = connections.flatMap(c => [c.requesterId, c.receiverId]);
+  const connectedUserIds = [currentUserId, ...connections.flatMap(c => [c.requesterId, c.receiverId])];
 
   const suggestions = await prisma.user.findMany({
     where: {
