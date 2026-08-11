@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { uploadImage } from '@/src/lib/cloudinary';
+import { uploadImage } from '@/src/lib/s3';
 
 export async function POST(request: NextRequest) {
   try {

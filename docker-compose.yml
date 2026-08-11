@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: sg-brokerspace-postgres
+    environment:
+      POSTGRES_USER: brokerAdmin
+      POSTGRES_PASSWORD: Shinzuo_123 
+      POSTGRES_DB: brokerspace_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  minio:
+    image: minio/minio
+    container_name: sg-brokerspace-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: admin
+      MINIO_ROOT_PASSWORD: password123
+    ports:
+      - "9002:9000"
+      - "9003:9001"
+    volumes:
+      - minio_data:/data
+    restart: unless-stopped
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: sg-brokerspace-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@brokerspace.com
+      PGADMIN_DEFAULT_PASSWORD: Shinzuo_123
+    ports:
+      - "5051:80"
+    restart: unless-stopped
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
+  minio_data:

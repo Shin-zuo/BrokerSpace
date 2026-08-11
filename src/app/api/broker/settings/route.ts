@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/src/lib/prisma';
 import { getSession } from '@/src/lib/auth';
-import { deleteImage } from '@/src/lib/cloudinary';
+import { deleteImage } from '@/src/lib/s3';
 import fs from 'fs';
 import path from 'path';
 

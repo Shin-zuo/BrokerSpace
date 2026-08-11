@@ -140,6 +140,7 @@ model Property {
   
   createdAt     DateTime        @default(now()) @map("created_at")
   updatedAt     DateTime        @updatedAt @map("updated_at")
+  deletedAt     DateTime?       @map("deleted_at")
 
   @@map("properties")
 }
@@ -152,6 +153,7 @@ model PropertyImage {
   isPrimary  Boolean  @default(false) @map("is_primary")
   createdAt  DateTime @default(now()) @map("created_at")
   updatedAt  DateTime @updatedAt @map("updated_at")
+  deletedAt  DateTime? @map("deleted_at")
 
   @@map("property_images")
 }

@@ -1,5 +1,5 @@
 import { prisma } from "@/src/lib/prisma";
-import { deleteImage } from "@/src/lib/cloudinary";
+import { deleteImage } from "@/src/lib/s3";
 
 export class PropertyController {
   static async getAll(brokerId?: string, viewerBrokerId?: string, viewerUserId?: string) {
@@ -29,12 +29,16 @@ export class PropertyController {
       };
     }
 
-    let whereClause: any = visibilityFilter;
+    let whereClause: any = {
+      ...visibilityFilter,
+      deletedAt: null
+    };
     if (brokerId) {
       whereClause = {
         AND: [
           { brokerId },
-          visibilityFilter
+          visibilityFilter,
+          { deletedAt: null }
         ]
       };
     }
@@ -106,7 +110,7 @@ export class PropertyController {
               console.error("Failed to delete file:", e);
             }
           }
-        } else if (img.url.includes('cloudinary.com')) {
+        } else {
           await deleteImage(img.url);
         }
       }
@@ -142,46 +146,10 @@ export class PropertyController {
   }
 
   static async delete(id: string) {
-    const fs = require('fs');
-    const path = require('path');
-
-    // Fetch images to delete files from file system
-    const images = await prisma.propertyImage.findMany({
-      where: { propertyId: id }
-    });
-
-    for (const img of images) {
-      if (img.url.startsWith('/uploads/properties/')) {
-        const safeUrl = img.url.replace(/^\//, '');
-        const filePath = path.join(process.cwd(), "public", safeUrl);
-        console.log("Attempting to delete image file on property delete:", filePath);
-        if (fs.existsSync(filePath)) {
-          try {
-            fs.unlinkSync(filePath);
-            console.log("Successfully deleted:", filePath);
-          } catch (e) {
-            console.error("Failed to delete file on property delete:", e);
-          }
-        }
-      } else if (img.url.includes('cloudinary.com')) {
-        await deleteImage(img.url);
-      }
-    }
-
-    // Delete related records first to satisfy foreign key constraints
-    await prisma.propertyImage.deleteMany({
-      where: { propertyId: id }
-    });
-
-    await prisma.like.deleteMany({ where: { propertyId: id } });
-    await prisma.savedProperty.deleteMany({ where: { propertyId: id } });
-    await prisma.conversation.updateMany({ 
-      where: { propertyId: id }, 
-      data: { propertyId: null } 
-    });
-
-    return await prisma.property.delete({
-      where: { id }
+    // Perform soft delete
+    return await prisma.property.update({
+      where: { id },
+      data: { deletedAt: new Date() }
     });
   }
 }

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { PropertyController } from "@/src/controllers/propertyController";
-import { uploadImage } from "@/src/lib/cloudinary";
+import { uploadImage } from "@/src/lib/s3";
 import { getSession } from "@/src/lib/auth";
 
 export async function PUT(request: Request, props: { params: Promise<{ id: string }> }) {
