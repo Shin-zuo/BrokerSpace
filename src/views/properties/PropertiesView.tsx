@@ -206,9 +206,9 @@ export default function PropertiesView() {
         toast.success('Property created successfully');
       }
       setIsModalOpen(false);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Save failed:", error);
-      toast.error('Failed to save property');
+      toast.error(error?.message || 'Failed to save property');
     }
   };
 

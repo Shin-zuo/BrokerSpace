@@ -19,8 +19,10 @@ export const propertyApi = {
       body: data instanceof FormData ? data : JSON.stringify(data),
       ...(data instanceof FormData ? {} : { headers: { "Content-Type": "application/json" } })
     });
-    if (!res.ok) throw new Error("Failed to create property");
-    const json = await res.json();
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok || json.success === false) {
+      throw new Error(json.error || "Failed to create property");
+    }
     return json.data;
   },
 

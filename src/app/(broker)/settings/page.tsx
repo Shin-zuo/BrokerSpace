@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { verifyToken } from '@/src/lib/auth';
 import { prisma } from '@/src/lib/prisma';
-import SettingsForm from '@/src/components/ui/SettingsForm';
+import SettingsTabs from '@/src/components/settings/SettingsTabs';
 import { Settings } from 'lucide-react';
 import BackButton from '@/src/components/ui/BackButton';
 
@@ -22,11 +22,26 @@ export default async function SettingsPage() {
   
   const broker = await prisma.broker.findUnique({
     where: { id: payload.brokerId as string },
+    include: {
+      payments: {
+        orderBy: { createdAt: 'desc' },
+        take: 15,
+      },
+    },
   });
   
   if (!broker) {
     redirect('/login');
   }
+
+  // Convert Prisma Decimal to plain JavaScript numbers for React Client Component serialization
+  const serializedBroker = {
+    ...broker,
+    payments: broker.payments.map((p) => ({
+      ...p,
+      amount: Number(p.amount),
+    })),
+  };
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
@@ -38,12 +53,14 @@ export default async function SettingsPage() {
           <Settings className="w-6 h-6" />
         </div>
         <div>
-          <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight">Profile Settings</h2>
-          <p className="text-slate-500 text-sm">Update your public profile, contact info, and credentials.</p>
+          <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight">Account & Settings</h2>
+          <p className="text-slate-500 text-sm">Manage your profile, public credentials, and subscription billing.</p>
         </div>
       </div>
       
-      <SettingsForm initialData={broker} />
+      <Suspense fallback={<div className="text-slate-500 py-10 text-center">Loading settings...</div>}>
+        <SettingsTabs broker={serializedBroker as any} />
+      </Suspense>
     </div>
   );
 }

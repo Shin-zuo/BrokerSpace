@@ -2,13 +2,26 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { getSession } from './lib/auth';
 
-// Add the routes you want to protect here
+// Regular broker protected routes
 const protectedRoutes = ['/properties', '/feed', '/messages', '/settings'];
 
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const path = req.nextUrl.pathname;
 
-  // Check if the route is protected
+  // Protect /admin routes strictly for SuperAdmin
+  if (path.startsWith('/admin')) {
+    const session = await getSession(req);
+
+    if (!session) {
+      return NextResponse.redirect(new URL('/login?redirect=/admin', req.url));
+    }
+
+    if (session.role !== 'SuperAdmin') {
+      return NextResponse.redirect(new URL('/feed', req.url));
+    }
+  }
+
+  // Check if standard broker route is protected
   const isProtectedRoute = protectedRoutes.some((route) => path.startsWith(route));
 
   if (isProtectedRoute) {
@@ -20,10 +33,13 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  // Prevent logged-in users from accessing the login, signup, or public landing page
+  // Prevent logged-in users from accessing login, signup, or public landing page
   if (path === '/login' || path === '/signup' || path === '/') {
     const session = await getSession(req);
     if (session) {
+      if (session.role === 'SuperAdmin') {
+        return NextResponse.redirect(new URL('/admin', req.url));
+      }
       return NextResponse.redirect(new URL('/feed', req.url));
     }
   }

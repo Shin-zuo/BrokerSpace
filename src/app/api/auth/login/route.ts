@@ -28,24 +28,48 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, message: 'Invalid credentials' }, { status: 401 });
     }
 
+    // Check if account is suspended
+    if (user.isSuspended) {
+      return NextResponse.json({ 
+        success: false, 
+        message: 'Your account has been suspended by the administrator. Please contact support.' 
+      }, { status: 403 });
+    }
+
     const isValidPassword = await bcrypt.compare(password, user.password);
 
     if (!isValidPassword) {
       return NextResponse.json({ success: false, message: 'Invalid credentials' }, { status: 401 });
     }
 
+    // Global Login Killswitch & Maintenance check (SuperAdmins are exempt)
+    if (user.role !== 'SuperAdmin') {
+      const { getSystemSettings } = await import('@/src/lib/systemSettings');
+      const settings = await getSystemSettings();
+
+      if (!settings.global_login_enabled || settings.maintenance_mode) {
+        return NextResponse.json({
+          success: false,
+          message: settings.maintenance_message || 'Broker login is temporarily paused for system maintenance. Please check back shortly.',
+        }, { status: 503 });
+      }
+    }
+
     await createSession(user.id, user.role, user.brokerId);
+
+    const redirectUrl = user.role === 'SuperAdmin' ? '/admin' : '/feed';
 
     return NextResponse.json({ 
       success: true, 
-      message: 'Logged in successfully', 
+      message: 'Logged in successfully',
+      redirectUrl,
       user: { 
         id: user.id, 
         username: user.username, 
         email: user.email, 
         role: user.role,
         brokerId: user.brokerId,
-        name: user.broker?.name // use broker's name if they have one
+        name: user.broker?.name
       } 
     });
   } catch (error) {

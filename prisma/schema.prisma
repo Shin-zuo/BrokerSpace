@@ -62,6 +62,7 @@ model User {
   username       String     @unique
   email          String     @unique
   password       String
+  isSuspended    Boolean    @default(false) @map("is_suspended")
   
   brokerId       String?    @unique @map("broker_id")
   broker         Broker?    @relation(fields: [brokerId], references: [id])
@@ -100,9 +101,20 @@ model Broker {
   websiteUrl        String?    @map("website_url")
   specialization    String?
   publicEmail       String?    @map("public_email")
+  subscriptionPlan      String     @default("monthly") @map("subscription_plan")
+  subscriptionStatus    String     @default("active") @map("subscription_status")
+  subscriptionExpiresAt DateTime?  @map("subscription_expires_at")
+  currentInvoiceId      String?    @map("current_invoice_id")
+
+  // Permissions & Access Limits
+  maxListings           Int        @default(50) @map("max_listings")
+  canPostListings       Boolean    @default(true) @map("can_post_listings")
+  canMessage            Boolean    @default(true) @map("can_message")
+  isVerified            Boolean    @default(false) @map("is_verified")
 
   user              User?
   properties        Property[]
+  payments          PaymentTransaction[]
   
   createdAt         DateTime   @default(now()) @map("created_at")
   updatedAt         DateTime   @updatedAt @map("updated_at")
@@ -251,4 +263,32 @@ model Notification {
   createdAt  DateTime         @default(now()) @map("created_at")
 
   @@map("notifications")
+}
+
+model PaymentTransaction {
+  id              String    @id @default(uuid())
+  brokerId        String    @map("broker_id")
+  broker          Broker    @relation(fields: [brokerId], references: [id], onDelete: Cascade)
+  xenditInvoiceId String    @unique @map("xendit_invoice_id")
+  externalId      String    @unique @map("external_id")
+  amount          Decimal
+  currency        String    @default("PHP")
+  plan            String    // 'monthly' | 'yearly'
+  status          String    // 'PENDING' | 'PAID' | 'EXPIRED' | 'FAILED'
+  paymentMethod   String?   @map("payment_method")
+  payerEmail      String?   @map("payer_email")
+  paidAt          DateTime? @map("paid_at")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  @@map("payment_transactions")
+}
+
+model SystemSetting {
+  key         String   @id
+  value       String
+  description String?
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("system_settings")
 }

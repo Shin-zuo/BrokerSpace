@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { PropertyController } from "@/src/controllers/propertyController";
 import { uploadImage } from "@/src/lib/s3";
 import { getSession } from "@/src/lib/auth";
+import { prisma } from "@/src/lib/prisma";
 
 export async function GET(request: Request) {
   try {
@@ -69,6 +70,49 @@ export async function POST(request: Request) {
     }
     if (!session.brokerId) {
       return NextResponse.json({ success: false, error: 'Only brokers can create properties' }, { status: 403 });
+    }
+
+    // Global Property Posting Killswitch check (SuperAdmins are exempt)
+    if (session.role !== 'SuperAdmin') {
+      const { getSystemSettings } = await import('@/src/lib/systemSettings');
+      const settings = await getSystemSettings();
+
+      if (!settings.global_property_posting_enabled || settings.maintenance_mode) {
+        return NextResponse.json({
+          success: false,
+          error: 'Property posting is temporarily paused for system maintenance.',
+        }, { status: 403 });
+      }
+    }
+
+    // Enforce SuperAdmin permissions & access limits
+    const broker = await prisma.broker.findUnique({
+      where: { id: session.brokerId as string },
+      include: {
+        _count: {
+          select: {
+            properties: { where: { deletedAt: null } }
+          }
+        }
+      }
+    });
+
+    if (!broker) {
+      return NextResponse.json({ success: false, error: 'Broker account not found' }, { status: 404 });
+    }
+
+    if (!broker.canPostListings) {
+      return NextResponse.json({ 
+        success: false, 
+        error: 'Your property posting permission has been disabled by the administrator.' 
+      }, { status: 403 });
+    }
+
+    if (broker.maxListings !== -1 && (broker._count?.properties || 0) >= broker.maxListings) {
+      return NextResponse.json({ 
+        success: false, 
+        error: `Property listing limit reached (${broker.maxListings} properties max). Please contact the administrator to upgrade your limit.` 
+      }, { status: 403 });
     }
 
     const newProperty = await PropertyController.create(data, session.brokerId as string);

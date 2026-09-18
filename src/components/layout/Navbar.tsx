@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, MessageSquare, Search, Settings, LogOut, User, Bell, X } from 'lucide-react';
+import { Home, MessageSquare, Search, Settings, LogOut, User, Bell, X, CreditCard, Shield } from 'lucide-react';
 import NavbarSearch from './NavbarSearch';
 import { useSidebar } from './SidebarContext';
 import { Menu } from 'lucide-react';
@@ -97,6 +97,20 @@ export default function Navbar({ user }: { user?: any }) {
           <Home className="w-5 h-5" />
           <span className="hidden sm:block">Feed</span>
         </Link>
+
+        {user?.role === 'SuperAdmin' && (
+          <Link
+            href="/admin"
+            className={`relative flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-bold transition-colors cursor-pointer ${
+              pathname.startsWith('/admin')
+                ? 'text-indigo-600 bg-indigo-50 border border-indigo-200/60'
+                : 'text-indigo-600 hover:bg-indigo-50/60'
+            }`}
+          >
+            <Shield className="w-4 h-4 text-indigo-600" />
+            <span className="hidden sm:block">Admin Panel</span>
+          </Link>
+        )}
 
         {user ? (
           <>
@@ -305,6 +319,16 @@ export default function Navbar({ user }: { user?: any }) {
                     <Settings className="w-4 h-4 text-slate-400" />
                     Settings
                   </Link>
+                  <Link href="/settings?tab=billing" className="flex items-center gap-3 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 cursor-pointer">
+                    <CreditCard className="w-4 h-4 text-slate-400" />
+                    Subscription & Billing
+                  </Link>
+                  {user?.role === 'SuperAdmin' && (
+                    <Link href="/admin" className="flex items-center gap-3 px-4 py-2 text-sm text-indigo-700 font-bold hover:bg-indigo-50 cursor-pointer border-t border-slate-100">
+                      <Shield className="w-4 h-4 text-indigo-600" />
+                      Admin Control Panel
+                    </Link>
+                  )}
                   <div className="h-px bg-slate-200 my-1"></div>
                   <form action={logoutAction}>
                     <button type="submit" className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 cursor-pointer text-left">

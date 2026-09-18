@@ -36,7 +36,7 @@ export default function LoginPage() {
       const data = await res.json();
       if (data.success) {
         toast.success(data.message || "Logged in successfully");
-        router.push("/feed");
+        router.push(data.redirectUrl || "/feed");
         router.refresh();
       } else {
         toast.error(data.message || "Invalid credentials");

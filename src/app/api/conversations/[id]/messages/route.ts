@@ -62,6 +62,31 @@ export async function POST(req: NextRequest, props: { params: Promise<{ id: stri
     return NextResponse.json({ error: 'Message content is required' }, { status: 400 });
   }
 
+  // Global Messaging Killswitch check (SuperAdmins are exempt)
+  if (session.role !== 'SuperAdmin') {
+    const { getSystemSettings } = await import('@/src/lib/systemSettings');
+    const settings = await getSystemSettings();
+
+    if (!settings.global_messaging_enabled || settings.maintenance_mode) {
+      return NextResponse.json({
+        error: 'Direct messaging is temporarily paused for system maintenance.',
+      }, { status: 403 });
+    }
+  }
+
+  // Check if sender has messaging permission
+  if (session.brokerId) {
+    const senderBroker = await prisma.broker.findUnique({
+      where: { id: session.brokerId as string },
+      select: { canMessage: true },
+    });
+    if (senderBroker && !senderBroker.canMessage) {
+      return NextResponse.json({ 
+        error: 'Your messaging permission has been restricted by the administrator.' 
+      }, { status: 403 });
+    }
+  }
+
   try {
     const conversation = await prisma.conversation.findUnique({
       where: { id: conversationId },
